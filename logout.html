@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жүйеден шығу - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .logout-container {
+            max-width: 500px;
+            width: 90%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logout-header {
+            background: linear-gradient(90deg, #f44336, #d32f2f);
+            color: white;
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .logout-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logout-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .logout-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .logout-content {
+            padding: 40px 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ffcdd2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            color: #333;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .user-details p {
+            color: #666;
+            text-align: left;
+        }
+
+        .logout-message {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .logout-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logout-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .logout-option:hover {
+            background: #ffebee;
+            border-color: #ffcdd2;
+            transform: translateY(-2px);
+        }
+
+        .option-icon {
+            font-size: 1.5rem;
+            color: #f44336;
+        }
+
+        .option-text h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .option-text p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .logout-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .btn-logout {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.2);
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #bdbdbd;
+            transform: translateY(-2px);
+        }
+
+        .countdown {
+            margin-top: 25px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 10px;
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        .countdown-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        /* Статистика сессии */
+        .session-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #f44336;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .logout-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .session-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <div class="logout-header">
+            <!-- Кнопка Кері қайту -->
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            
+            <div class="logout-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h1>Жүйеден шығу</h1>
+            <p>ЕдуАссист платформасынан шығуға дайынсыз ба?</p>
+        </div>
+        
+        <div class="logout-content">
+            <!-- Информация о пользователе -->
+            <!-- Сообщение -->
+            <div class="logout-message">
+                Жүйеден шыққаннан кейін, жеке деректеріңіз қауіпсіз сақталады. 
+                Қайта кіру үшін құпиясөзді қайта енгізу қажет болады.
+            </div>
+            
+            <!-- Опции -->
+            <div class="logout-options">
+                <div class="logout-option" id="optionRemember">
+                    <div class="option-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Есіңізде болсын</h4>
+                        <p>Келесі кіруде парольді сұрамау</p>
+                    </div>
+                </div>
+                
+                <div class="logout-option" id="optionClear">
+                    <div class="option-icon">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Кэшті тазарту</h4>
+                        <p>Сессия деректерін жою</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Действия -->
+            <div class="logout-actions">
+                <button class="btn btn-cancel" onclick="cancelLogout()">
+                    <i class="fas fa-times"></i> Болдырмау
+                </button>
+                <button class="btn btn-logout" onclick="confirmLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Шығу
+                </button>
+            </div>
+            
+            <!-- Таймер автоматического выхода -->
+            <div class="countdown" id="countdown">
+                Автоматты шығу: <span class="countdown-number">30</span> секунд
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функция для возврата назад
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Если нет истории, возвращаем на главную
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация опций
+            const optionRemember = document.getElementById('optionRemember');
+            const optionClear = document.getElementById('optionClear');
+            const countdownElement = document.getElementById('countdown');
+            
+            let rememberSession = true;
+            let clearCache = false;
+            let countdown = 30;
+            let countdownInterval;
+            
+            // Обработка опции "Запомнить"
+            optionRemember.addEventListener('click', function() {
+                rememberSession = !rememberSession;
+                if (rememberSession) {
+                    this.style.background = '#e8f5e9';
+                    this.style.borderColor = '#c8e6c9';
+                    this.querySelector('.option-icon i').className = 'fas fa-check-circle';
+                    this.querySelector('.option-icon').style.color = '#4CAF50';
+                } else {
+                    this.style.background = '#f8f9fa';
+                    this.style.borderColor = 'transparent';
+                    this.querySelector('.option-icon i').className = 'far fa-circle';
+                    this.querySelector('.option-icon').style.color = '#f44336';
+                }
+            });
+            
+            // Обработка опции "Очистить кэш"
+            optionClear.addEventListener('click', function() {
+                clearCache = !clearCache;
+                if (clearCache) {
+                    this.style.background = '#fff3e0';
+                    this.style.borderColor = '#ffe0b2';
+                    this.querySelector('.option-icon i').className = 'fas fa-check-square';
+                    this.querySelector('.option-icon').style.color = '#ff9800';
+                } else {
+                    this.style.background = '#f8f9fa';
+                    this.style.borderColor = 'transparent';
+                    this.querySelector('.option-icon i').className = 'fas fa-trash';
+                    this.querySelector('.option-icon').style.color = '#f44336';
+                }
+            });
+            
+            // Старт таймера
+            function startCountdown() {
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    countdownElement.innerHTML = 
+                        `Автоматты шығу: <span class="countdown-number">${countdown}</span> секунд`;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        confirmLogout();
+                    }
+                    
+                    if (countdown <= 10) {
+                        countdownElement.style.background = '#ffebee';
+                        countdownElement.style.color = '#c62828';
+                    }
+                }, 1000);
+            }
+            
+            // Отмена выхода
+            window.cancelLogout = function() {
+                clearInterval(countdownInterval);
+                window.location.href = 'personal-cabinet.html';
+            };
+            
+            // Подтверждение выхода
+            window.confirmLogout = function() {
+                clearInterval(countdownInterval);
+                
+                // Показываем сообщение
+                const logoutContent = document.querySelector('.logout-content');
+                logoutContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="font-size: 4rem; color: #4CAF50; margin-bottom: 20px;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2 style="color: #2E7D32; margin-bottom: 15px;">Сәтті шықтыңыз!</h2>
+                        <p style="color: #666; margin-bottom: 30px; line-height: 1.6;">
+                            ${rememberSession ? 'Сіздің сессия деректеріңіз сақталды. Келесі кіру жеңіл болады.' : 'Келесі кіруде құпиясөзді қайта енгізу қажет.'}
+                            ${clearCache ? 'Кэш деректері тазартылды.' : ''}
+                        </p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 30px 0;">
+                            <h4 style="color: #333; margin-bottom: 10px;">Сессияның қысқаша есебі:</h4>
+                            <p style="color: #666;">• 2 сағат 15 минут белсенділік</p>
+                            <p style="color: #666;">• 7 материал қаралды</p>
+                            <p style="color: #666;">• 3 жаңа материал жүктелді</p>
+                        </div>
+                        <button onclick="redirectToLogin()" style="background: #4CAF50; color: white; border: none; padding: 15px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-sign-in-alt"></i> Кіру бетіне өту
+                        </button>
+                    </div>
+                `;
+                
+                // Симуляция задержки перед перенаправлением
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            };
+            
+            // Перенаправление на страницу входа
+            window.redirectToLogin = function() {
+                window.location.href = 'login.html';
+            };
+            
+            // Старт таймера при загрузке
+            startCountdown();
+            
+            // Остановка таймера при взаимодействии
+            document.addEventListener('click', function() {
+                clearInterval(countdownInterval);
+                countdown = 30;
+                countdownElement.innerHTML = 
+                    `Автоматты шығу: <span class="countdown-number">${countdown}</span> секунд`;
+                countdownElement.style.background = '#fff3e0';
+                countdownElement.style.color = '#e65100';
+                startCountdown();
+            });
+            
+            // Загрузка статистики сессии
+            function loadSessionStats() {
+                // Здесь можно загрузить реальную статистику из localStorage или сервера
+                const sessionStart = localStorage.getItem('sessionStart');
+                if (sessionStart) {
+                    const sessionDuration = Math.floor((Date.now() - parseInt(sessionStart)) / 60000);
+                    document.querySelector('.stat-value').textContent = 
+                        `${Math.floor(sessionDuration / 60)} сағ ${sessionDuration % 60} мин`;
+                }
+                
+                const viewedMaterials = localStorage.getItem('viewedMaterials') || '7';
+                document.querySelectorAll('.stat-value')[1].textContent = viewedMaterials;
+            }
+            
+            // Инициализация
+            loadSessionStats();
+        });
+    </script>
+</body>
+</html>

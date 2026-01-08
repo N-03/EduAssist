@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAssist | Басты бет</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .dashboard-header {
+      background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+      color: white;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 300px;
+      background: rgba(255,255,255,0.1);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 0);
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .dashboard-header p {
+      font-size: 1.2rem;
+      opacity: 0.95;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    
+    .header-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .header-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header-stat i {
+      font-size: 1.2rem;
+    }
+    
+    .dashboard-content {
+      padding: 40px;
+    }
+    
+    .welcome-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 40px;
+      border-radius: 15px;
+      margin-bottom: 40px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 30px;
+      align-items: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    
+    @media (max-width: 768px) {
+      .welcome-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+    
+    .user-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      box-shadow: 0 10px 20px rgba(74, 138, 244, 0.3);
+    }
+    
+    .welcome-text h2 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .welcome-text p {
+      color: #666;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      min-width: 150px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(74, 138, 244, 0.4);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #4a8af4;
+      color: #4a8af4;
+    }
+    
+    .btn-outline:hover {
+      background: #4a8af4;
+      color: white;
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+      margin-top: 10px;
+    }
+    
+    .btn-danger:hover {
+      box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      border-left: 5px solid #4a8af4;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #4a8af4;
+    }
+    
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+    
+    .stat-trend {
+      font-size: 1rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    
+    .trend-up {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4CAF50;
+    }
+    
+    .trend-down {
+      background: rgba(244, 67, 54, 0.15);
+      color: #f44336;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+    
+    .stat-progress {
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4a8af4, #3a76d5);
+      border-radius: 3px;
+      width: 0;
+      transition: width 1s ease;
+    }
+    
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .action-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .action-card:hover {
+      border-color: #4a8af4;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(74, 138, 244, 0.15);
+    }
+    
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #4a8af4, #3a76d5);
+    }
+    
+    .action-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #4a8af4;
+    }
+    
+    .action-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .action-description {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .action-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #4a8af4;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .recent-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .section-title i {
+      color: #4a8af4;
+    }
+    
+    .recent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .recent-item {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    
+    .recent-item:hover {
+      transform: translateY(-3px);
+    }
+    
+    .recent-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+    
+    .recent-content h4 {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .recent-content p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .recent-time {
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 5px;
+    }
+    
+    .dashboard-footer {
+      background: #2c3e50;
+      color: white;
+      padding: 30px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    
+    .footer-section h3 {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #ecf0f1;
+    }
+    
+    .footer-section a {
+      display: block;
+      color: #bdc3c7;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.3s;
+    }
+    
+    .footer-section a:hover {
+      color: #4a8af4;
+    }
+    
+    .copyright {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #95a5a6;
+      font-size: 0.9rem;
+    }
+    
+    .notification-bell {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: rgba(255,255,255,0.2);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .notification-bell:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(15deg);
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff6b6b;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .progress-section {
+      margin: 40px 0;
+    }
+    
+    .progress-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .progress-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .progress-card h4 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+    
+    .progress-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+    
+    .progress-percent {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4a8af4;
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-header {
+        padding: 30px 20px;
+      }
+      
+      .dashboard-content {
+        padding: 20px;
+      }
+      
+      .stats-grid,
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-stats {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    
+    /* Анимации */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-card {
+      animation: countUp 0.6s ease forwards;
+      opacity: 0;
+    }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    <!-- Шапка -->
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1><i class="fas fa-graduation-cap"></i> EduAssist</h1>
+        <p>Педагог-ассистенттерге арналған интеллектуалды платформа - білім беру процестерін жеңілдету және тиімді ету</p>
+  
+      </div>
+      
+      <div class="header-bg"></div>
+      
+      <div class="notification-bell" onclick="showNotifications()">
+        <i class="fas fa-bell"></i>
+        <div class="notification-badge" id="notificationCount">3</div>
+      </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="dashboard-content">
+      <!-- Приветствие -->
+      <div class="welcome-card">
+        <div class="user-avatar" id="userAvatar">S</div>
+        
+        <div class="welcome-text">
+          <h2>Қош келдіңіз, <span id="userName">Қолданушы</span>!</h2>
+          <p> Сіздің белсенділігіңіз: <span id="userRole">Мұғалім</span>. Соңғы кірген уақытыңыз: <span id="lastLogin">бүгін</span></p>
+        </div>
+        
+        <div class="action-buttons">
+          <a href="material.html" class="btn">
+            <i class="fas fa-search"></i> Материалдарды іздеу
+          </a>
+          <a href="profile.html" class="btn btn-outline">
+            <i class="fas fa-user-cog"></i> Профильді баптау
+          </a>
+          <a href="logout.html" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Жүйеден шығу
+          </a>
+        </div>
+      </div>
+
+      <!-- Статистика -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <div class="stat-number" id="totalMaterials">0</div>
+          <div class="stat-label">Жалпы материалдар</div>
+          <div class="stat-progress">
+            <div class="progress-bar" id="materialsProgress" style="width: 75%"></div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-number">
+            <span id="favoritesCount">0</span>
+            <span class="stat-trend trend-up" id="favoritesTrend">+12%</span>
+          </div>
+          <div class="stat-label">Таңдаулы материалдар</div>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 60%"></div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-number">
+            <span id="totalUsers">0</span>
+            <span class="stat-trend trend-up" id="usersTrend">+8%</span>
+          </div>
+          <div class="stat-label">Белсенді қолданушылар</div>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 85%"></div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-download"></i>
+          </div>
+          <div class="stat-number">
+            <span id="downloadsCount">0</span>
+            <span class="stat-trend trend-up" id="downloadsTrend">+24%</span>
+          </div>
+          <div class="stat-label">Жаңа жүктеулер (30 күн)</div>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 90%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Быстрые действия -->
+      <h2 class="section-title">
+        <i class="fas fa-bolt"></i> Жылдам әрекеттер
+      </h2>
+      
+      <div class="actions-grid">
+        <div class="action-card" onclick="window.location.href='resources.html'">
+          <div class="action-badge">Жаңа</div>
+          <div class="action-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          
+          <div class="action-title">Материалдарды іздеу</div>
+          <div class="action-description">
+            Пән, сынып және формат бойынша материалдарды іздеп табыңыз. Жетілдірілген іздеу жүйесі арқылы қажетті ақпаратты тез табыңыз
+          </div>
+        </div>
+        
+        <div class="action-card" onclick="window.location.href='profile.html'">
+          <div class="action-icon">
+            <i class="fas fa-user-cog"></i>
+          </div>
+          <div class="action-title">Жеке кабинет</div>
+          <div class="action-description">
+            Профильді баптау, материалдар мен таңдаулыларды басқару. Сіздің белсенділігіңіз бойынша статистиканы қараңыз
+          </div>
+        </div>
+        
+        <div class="action-card" onclick="uploadMaterial()">
+          <div class="action-badge">Көп сұралады</div>
+          <div class="action-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <div class="action-title">Материал жүктеу</div>
+          <div class="action-description">
+            Өз оқу материалдарыңызды басқа қолданушылармен бөлісіңіз. PDF, DOC, PPT, бейне және аудио форматтарын қолдау
+          </div>
+        </div>
+        
+        <div class="action-card" onclick="window.location.href='favorites.html'">
+          <div class="action-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="action-title">Таңдаулылар</div>
+          <div class="action-description">
+            Құнды материалдарды сақтап, кейінірек қараңыз. Өз таңдаулылар папкаларыңызды құрып, материалдарды ұйымдастырыңыз
+          </div>
+        </div>
+        
+        <div class="action-card" onclick="window.location.href='messages.html'">
+          <div class="action-badge" id="unreadMessages">2 жаңа</div>
+          <div class="action-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div class="action-title">Хабарламалар</div>
+          <div class="action-description">
+            Мұғалімдермен және қолдау қызметімен байланысыңыз. Сұрақтарыңызды қойыңыз, кеңес алыңыз
+          </div>
+        </div>
+        
+        <div class="action-card" onclick="window.location.href='progress.html'">
+          <div class="action-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="action-title">Статистика</div>
+          <div class="action-description">
+            Сіздің оқу белсенділігіңіз бойынша егжей-тегжейлі статистиканы қараңыз. Өсу графиктері мен талдаулар
+          </div>
+        </div>
+      </div>
+
+      <!-- Прогресс обучения -->
+      <div class="progress-section">
+        <h2 class="section-title">
+          <i class="fas fa-chart-bar"></i> Оқу прогрессі
+        </h2>
+        
+        <div class="progress-cards">
+          <div class="progress-card">
+            <h4>Математика</h4>
+            <div class="stat-progress">
+              <div class="progress-bar" style="width: 85%"></div>
+            </div>
+            <div class="progress-details">
+              <span>85% толық</span>
+              <span class="progress-percent">85%</span>
+            </div>
+          </div>
+          
+          <div class="progress-card">
+            <h4>Физика</h4>
+            <div class="stat-progress">
+              <div class="progress-bar" style="width: 72%"></div>
+            </div>
+            <div class="progress-details">
+              <span>72% толық</span>
+              <span class="progress-percent">72%</span>
+            </div>
+          </div>
+          
+          <div class="progress-card">
+            <h4>Қазақ тілі</h4>
+            <div class="stat-progress">
+              <div class="progress-bar" style="width: 90%"></div>
+            </div>
+            <div class="progress-details">
+              <span>90% толық</span>
+              <span class="progress-percent">90%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Недавняя активность -->
+      <div class="recent-section">
+        <h2 class="section-title">
+          <i class="fas fa-history"></i> Соңғы белсенділік
+        </h2>
+        
+        <div class="recent-grid" id="recentActivity">
+          <!-- Активность загружается динамически -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Подвал -->
+    <div class="dashboard-footer">
+      <div class="footer-section">
+        <h3>EduAssist</h3>
+        <a href="about.html">Біз туралы</a>
+        <a href="contact.html">Байланыс</a>
+        <a href="careers.html">Мансап</a>
+        <a href="partners.html">Серіктестер</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Ресурстар</h3>
+        <a href="material.html">Материалдар</a>
+        <a href="guides.html">Нұсқаулықтар</a>
+        <a href="faq.html">Жиі қойылатын сұрақтар</a>
+        <a href="support.html">Қолдау қызметі</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Бізге қосылыңыз</h3>
+        <a href="https://instagram.com/@Naz_lym"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="https://t.me/@Naz_lym"><i class="fab fa-telegram"></i> Telegram</a>
+        <a href="https://wa.me/77716597361"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+      
+      <div class="copyright">
+        <p>© 2025 EduAssist. Барлық құқықтар қорғалған.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Астана, Қазақстан | naz_sivanbayeva@mail.ru | +7 (771) 659-73-61</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Инициализация Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJrCYwCJHqvZtkm6ojuCNMvrmUeYXHP5A",
+      authDomain: "eduassist-eb506.firebaseapp.com",
+      projectId: "eduassist-eb506",
+      storageBucket: "eduassist-eb506.appspot.com",
+      messagingSenderId: "977276770732",
+      appId: "1:977276770732:web:89e61415aa457039894209"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let currentUser = null;
+    let sessionStartTime = Date.now();
+
+    // Загрузка данных при открытии страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      // Установка текущей даты
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('kk-KZ', options);
+      
+      // Запуск таймера сессии
+      updateSessionTimer();
+      setInterval(updateSessionTimer, 60000); // Обновлять каждую минуту
+      
+      // Проверка авторизации
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          
+          // Отображение информации пользователя
+          document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+          const firstLetter = (user.displayName || user.email).charAt(0).toUpperCase();
+          document.getElementById('userAvatar').textContent = firstLetter;
+          
+          // Загрузка дополнительной информации пользователя
+          await loadUserProfile(user.uid);
+          
+          // Загрузка статистики
+          await loadStatistics(user.uid);
+          
+          // Загрузка последней активности
+          await loadRecentActivity(user.uid);
+          
+          // Загрузка уведомлений
+          await loadNotifications(user.uid);
+          
+          // Сохранение времени начала сессии
+          localStorage.setItem('sessionStart', sessionStartTime);
+        } else {
+          window.location.href = 'index.html';
+        }
+      });
+    });
+
+    // Загрузка профиля пользователя
+    async function loadUserProfile(userId) {
+      try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          document.getElementById('userRole').textContent = userData.role || 'Қолданушы';
+          
+          // Установка последнего входа
+          if (userData.lastLogin) {
+            const lastLogin = userData.lastLogin.toDate();
+            const now = new Date();
+            const diffHours = Math.floor((now - lastLogin) / (1000 * 60 * 60));
+            
+            if (diffHours < 1) {
+              document.getElementById('lastLogin').textContent = 'жақында';
+            } else if (diffHours < 24) {
+              document.getElementById('lastLogin').textContent = `${diffHours} сағат бұрын`;
+            } else {
+              document.getElementById('lastLogin').textContent = lastLogin.toLocaleDateString('kk-KZ');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+      }
+    }
+
+    // Загрузка статистики
+    async function loadStatistics(userId) {
+      try {
+        // 1. Подсчет всех материалов
+        const materialsSnapshot = await db.collection('resources').get();
+        const totalMaterials = materialsSnapshot.size;
+        document.getElementById('totalMaterials').textContent = totalMaterials.toLocaleString();
+        
+        // 2. Подсчет избранного пользователя
+        const favoritesSnapshot = await db.collection('users').doc(userId).collection('favorites').get();
+        const favoritesCount = favoritesSnapshot.size;
+        document.getElementById('favoritesCount').textContent = favoritesCount.toLocaleString();
+        
+        // 3. Подсчет активных пользователей (за последние 30 дней)
+        const monthAgo = new Date();
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        const usersSnapshot = await db.collection('users')
+          .where('lastActive', '>=', monthAgo)
+          .get();
+        const activeUsers = usersSnapshot.size;
+        document.getElementById('totalUsers').textContent = activeUsers.toLocaleString();
+        
+        // 4. Подсчет скачиваний за последние 30 дней
+        const downloadsSnapshot = await db.collection('downloads')
+          .where('timestamp', '>=', monthAgo)
+          .get();
+        const recentDownloads = downloadsSnapshot.size;
+        document.getElementById('downloadsCount').textContent = recentDownloads.toLocaleString();
+        
+        // 5. Расчет трендов (для демонстрации используем случайные значения)
+        document.getElementById('favoritesTrend').textContent = `+${Math.floor(Math.random() * 20) + 5}%`;
+        document.getElementById('usersTrend').textContent = `+${Math.floor(Math.random() * 15) + 3}%`;
+        document.getElementById('downloadsTrend').textContent = `+${Math.floor(Math.random() * 30) + 10}%`;
+        
+        // Анимация прогресс-баров
+        setTimeout(() => {
+          document.getElementById('materialsProgress').style.width = '75%';
+        }, 500);
+        
+      } catch (error) {
+        console.error('Error loading statistics:', error);
+      }
+    }
+
+    // Загрузка последней активности
+    async function loadRecentActivity(userId) {
+      try {
+        const activityRef = db.collection('users').doc(userId).collection('activity')
+          .orderBy('timestamp', 'desc')
+          .limit(5);
+        
+        const snapshot = await activityRef.get();
+        const activityContainer = document.getElementById('recentActivity');
+        
+        if (snapshot.empty) {
+          // Демо данные для примера
+          const demoActivities = [
+            { type: 'material_view', title: 'Математика: Туындылар', time: '10:30' },
+            { type: 'material_upload', title: 'Физика: Заттың күйлері', time: 'Вчера' },
+            { type: 'favorite_add', title: 'Қазақ әдебиеті: Абай', time: '2 күн бұрын' },
+            { type: 'message_sent', title: 'Мұғалімге хабарлама', time: '3 күн бұрын' },
+            { type: 'profile_update', title: 'Профиль жаңартылды', time: '1 апта бұрын' }
+          ];
+          
+          demoActivities.forEach(activity => {
+            addActivityItem(activity.type, activity.title, activity.time);
+          });
+          return;
+        }
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          addActivityItem(data.type, data.title, data.timestamp);
+        });
+        
+      } catch (error) {
+        console.error('Error loading recent activity:', error);
+        
+        // В случае ошибки показываем демо данные
+        const demoActivities = [
+          { type: 'material_view', title: 'Математика: Туындылар', time: '10:30' },
+          { type: 'material_upload', title: 'Физика: Заттың күйлері', time: 'Вчера' },
+          { type: 'favorite_add', title: 'Қазақ әдебиеті: Абай', time: '2 күн бұрын' }
+        ];
+        
+        const activityContainer = document.getElementById('recentActivity');
+        demoActivities.forEach(activity => {
+          addActivityItem(activity.type, activity.title, activity.time);
+        });
+      }
+    }
+
+    // Добавление элемента активности
+    function addActivityItem(type, title, timestamp) {
+      const activityContainer = document.getElementById('recentActivity');
+      
+      let icon, color, description;
+      switch(type) {
+        case 'material_view':
+          icon = 'fa-eye';
+          color = '#4a8af4';
+          description = 'Материал қаралды';
+          break;
+        case 'material_upload':
+          icon = 'fa-cloud-upload-alt';
+          color = '#4CAF50';
+          description = 'Материал жүктелді';
+          break;
+        case 'favorite_add':
+          icon = 'fa-star';
+          color = '#FF9800';
+          description = 'Таңдаулыларға қосылды';
+          break;
+        case 'message_sent':
+          icon = 'fa-comment';
+          color = '#9C27B0';
+          description = 'Хабарлама жіберілді';
+          break;
+        default:
+          icon = 'fa-history';
+          color = '#607D8B';
+          description = 'Белсенділік';
+      }
+      
+      let timeText;
+      if (timestamp instanceof firebase.firestore.Timestamp) {
+        const timeDate = timestamp.toDate();
+        const now = new Date();
+        const diffHours = Math.floor((now - timeDate) / (1000 * 60 * 60));
+        
+        if (diffHours < 1) {
+          timeText = `${Math.floor((now - timeDate) / (1000 * 60))} минут бұрын`;
+        } else if (diffHours < 24) {
+          timeText = `${diffHours} сағат бұрын`;
+        } else {
+          timeText = timeDate.toLocaleDateString('kk-KZ');
+        }
+      } else {
+        timeText = timestamp;
+      }
+      
+      const activityHTML = `
+        <div class="recent-item">
+          <div class="recent-icon" style="background: ${color}">
+            <i class="fas ${icon}"></i>
+          </div>
+          <div class="recent-content">
+            <h4>${title}</h4>
+            <p>${description}</p>
+            <div class="recent-time">${timeText}</div>
+          </div>
+        </div>
+      `;
+      
+      activityContainer.innerHTML += activityHTML;
+    }
+
+    // Загрузка уведомлений
+    async function loadNotifications(userId) {
+      try {
+        const notificationsRef = db.collection('users').doc(userId).collection('notifications')
+          .where('read', '==', false)
+          .limit(10);
+        
+        const snapshot = await notificationsRef.get();
+        document.getElementById('notificationCount').textContent = snapshot.size;
+        
+        // Загрузка непрочитанных сообщений
+        const messagesRef = db.collection('messages')
+          .where('receiverId', '==', userId)
+          .where('read', '==', false);
+        
+        const messagesSnapshot = await messagesRef.get();
+        if (messagesSnapshot.size > 0) {
+          document.getElementById('unreadMessages').textContent = `${messagesSnapshot.size} жаңа`;
+        }
+        
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+      }
+    }
+
+    // Обновление таймера сессии
+    function updateSessionTimer() {
+      const now = Date.now();
+      const diffMs = now - sessionStartTime;
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      
+      document.getElementById('sessionTime').textContent = 
+        `${diffHours} сағ ${diffMinutes} мин`;
+    }
+
+    // Загрузка материала
+    function uploadMaterial() {
+      const modalHTML = `
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+          <div style="background: white; padding: 40px; border-radius: 15px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <h2 style="color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-cloud-upload-alt"></i> Материал жүктеу
+            </h2>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Материал атауы</label>
+              <input type="text" id="materialTitle" placeholder="Материал атауын енгізіңіз" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Сипаттама</label>
+              <textarea id="materialDescription" placeholder="Материалдың сипаттамасы" rows="3" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Файл таңдау</label>
+              <div style="border: 2px dashed #4a8af4; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer;" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #4a8af4; margin-bottom: 15px;"></i>
+                <p style="color: #666;">Файлды осы жерге тартыңыз немесе басыңыз</p>
+                <p style="font-size: 0.9rem; color: #999; margin-top: 10px;">PDF, DOC, PPT, JPG, MP4 (max 50MB)</p>
+              </div>
+              <input type="file" id="fileInput" style="display: none;">
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button onclick="closeModal()" style="padding: 12px 25px; background: #f0f0f0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                Болдырмау
+              </button>
+              <button onclick="submitMaterial()" style="padding: 12px 25px; background: #4a8af4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                Жүктеу
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      const modal = document.createElement('div');
+      modal.innerHTML = modalHTML;
+      document.body.appendChild(modal);
+      
+      window.closeModal = function() {
+        document.body.removeChild(modal);
+      };
+      
+      window.submitMaterial = async function() {
+        const title = document.getElementById('materialTitle').value;
+        const description = document.getElementById('materialDescription').value;
+        const fileInput = document.getElementById('fileInput');
+        
+        if (!title.trim()) {
+          alert('Материал атауын енгізіңіз!');
+          return;
+        }
+        
+        if (!fileInput.files[0]) {
+          alert('Файл таңдаңыз!');
+          return;
+        }
+        
+        try {
+          // Здесь будет код для загрузки файла в Firebase Storage
+          // и сохранения информации в Firestore
+          alert('Материал сәтті жүктелді! (Демо режим)');
+          closeModal();
+          
+          // Обновление статистики
+          if (currentUser) {
+            await loadStatistics(currentUser.uid);
+          }
+          
+        } catch (error) {
+          console.error('Error uploading material:', error);
+          alert('Материалды жүктеу кезінде қате пайда болды');
+        }
+      };
+    }
+
+    // Показать уведомления
+    function showNotifications() {
+      const notifications = [
+        { title: 'Жаңа материал', text: 'Физика бойынша жаңа материал қосылды', time: '5 минут бұрын' },
+        { title: 'Жауап алдыңыз', text: 'Сіздің сұрағыңызға мұғалім жауап берді', time: '1 сағат бұрын' },
+        { title: 'Жүйе жаңартуы', text: 'Жүйе жаңа мүмкіндіктермен жаңартылды', time: '1 күн бұрын' }
+      ];
+      
+      const modalHTML = `
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+          <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h2 style="color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-bell"></i> Хабарландырулар
+            </h2>
+            
+            <div id="notificationsList" style="margin-bottom: 20px;">
+              ${notifications.map(notif => `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4a8af4;">
+                  <div style="font-weight: 600; color: #333; margin-bottom: 5px;">${notif.title}</div>
+                  <div style="color: #666; font-size: 0.9rem;">${notif.text}</div>
+                  <div style="color: #999; font-size: 0.8rem; margin-top: 5px;">${notif.time}</div>
+                </div>
+              `).join('')}
+            </div>
+            
+            <button onclick="closeNotifications()" style="width: 100%; padding: 12px; background: #4a8af4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+              Барлығын оқылған деп белгілеу
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const modal = document.createElement('div');
+      modal.innerHTML = modalHTML;
+      document.body.appendChild(modal);
+      
+      window.closeNotifications = function() {
+        document.getElementById('notificationCount').textContent = '0';
+        document.body.removeChild(modal);
+      };
+    }
+
+    // Выход из системы
+    function logout() {
+      if (confirm('Жүйеден шығуға сенімдісіз бе?')) {
+        // Сохранение времени сессии
+        if (currentUser) {
+          const sessionDuration = Date.now() - sessionStartTime;
+          const sessionHours = Math.floor(sessionDuration / (1000 * 60 * 60));
+          const sessionMinutes = Math.floor((sessionDuration % (1000 * 60 * 60)) / (1000 * 60));
+          
+          // Здесь можно сохранить информацию о сессии в базу данных
+          console.log(`Сессия ұзақтығы: ${sessionHours} сағ ${sessionMinutes} мин`);
+        }
+        
+        auth.signOut().then(() => {
+          window.location.href = 'index.html';
+        }).catch(error => {
+          console.error('Error signing out:', error);
+          alert('Шығу кезінде қате пайда болды');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

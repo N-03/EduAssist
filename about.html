@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Біз туралы - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f9f7f7 0%, #dbe2ef 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '🎓';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 30px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #112D4E;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #112D4E;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Миссия и видение */
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .mission-card, .vision-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before, .vision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .mission-card::before {
+            background: linear-gradient(90deg, #112D4E, #3F72AF);
+        }
+
+        .vision-card::before {
+            background: linear-gradient(90deg, #3F72AF, #DBE2EF);
+        }
+
+        .mission-icon, .vision-icon {
+            font-size: 4rem;
+            margin-bottom: 25px;
+        }
+
+        .mission-icon {
+            color: #112D4E;
+        }
+
+        .vision-icon {
+            color: #3F72AF;
+        }
+
+        .mission-title, .vision-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .mission-text, .vision-text {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* История */
+        .history-section {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .history-section::before {
+            content: '📜';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.05;
+            right: 40px;
+            top: 40px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #112D4E;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #112D4E, #3F72AF);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 100px;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 80px;
+            height: 80px;
+            background: #112D4E;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: #F9F7F7;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #3F72AF;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #112D4E;
+            margin-bottom: 15px;
+        }
+
+        .timeline-description {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Команда */
+        .team-section {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 35px 25px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #F9F7F7 0%, #DBE2EF 100%);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(63, 114, 175, 0.15);
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #112D4E, #3F72AF);
+        }
+
+        .member-avatar {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #112D4E, #3F72AF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .member-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #112D4E;
+            margin-bottom: 10px;
+        }
+
+        .member-role {
+            color: #3F72AF;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .member-bio {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .member-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3F72AF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #3F72AF;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Статистика */
+        .stats-section {
+            background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
+            color: white;
+            padding: 70px 40px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #DBE2EF;
+        }
+
+        .stat-label {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        /* Ценности */
+        .values-section {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 35px 25px;
+            border-radius: 15px;
+            background: #F9F7F7;
+            transition: all 0.3s;
+        }
+
+        .value-card:hover {
+            background: #DBE2EF;
+            transform: translateY(-10px);
+        }
+
+        .value-icon {
+            font-size: 3.5rem;
+            color: #112D4E;
+            margin-bottom: 25px;
+        }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #112D4E;
+            margin-bottom: 15px;
+        }
+
+        .value-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Награды и достижения */
+        .awards-section {
+            background: linear-gradient(135deg, #F9F7F7 0%, #DBE2EF 100%);
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+        }
+
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .award-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .award-icon {
+            font-size: 3rem;
+            color: #FFD700;
+        }
+
+        .award-content h4 {
+            font-size: 1.4rem;
+            color: #112D4E;
+            margin-bottom: 10px;
+        }
+
+        .award-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Призыв к действию */
+        .cta-section {
+            background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cta-title {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cta-btn-primary {
+            background: white;
+            color: #112D4E;
+        }
+
+        .cta-btn-primary:hover {
+            background: #DBE2EF;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .cta-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-btn-secondary:hover {
+            background: white;
+            color: #112D4E;
+            transform: translateY(-5px);
+        }
+
+        /* Футер */
+        .footer {
+            background: #112D4E;
+            color: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: white;
+            color: #112D4E;
+            transform: translateY(-5px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 50px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-section,
+            .team-section,
+            .values-section,
+            .awards-section,
+            .stats-section {
+                padding: 40px 25px;
+            }
+            
+            .timeline::before {
+                left: 40px;
+            }
+            
+            .timeline-item {
+                padding-left: 80px;
+            }
+            
+            .timeline-year {
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+            
+            .team-grid,
+            .values-grid,
+            .awards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Біз туралы</h1>
+                <p>
+                    EduAssist - бұл білім беру технологияларын қолданып, оқу процестерін жеңілдетуге 
+                    және тиімді етуге арналған инновациялық платформа. Біз әрбір оқушы мен мұғалімге 
+                    қолжетімді, сапалы және заманауи білім беру мүмкіндіктерін жасауға ұмтыламыз.
+                </p>
+            </div>
+        </div>
+
+        <!-- Миссия и видение -->
+        <div class="mission-vision">
+            <div class="mission-card">
+                <div class="mission-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h2 class="mission-title">Біздің мақсатымыз</h2>
+                <p class="mission-text">
+                    Қазақстандағы барлық Педагог-ассистенттерге заманауи білім беру ресурстарына 
+                    тегін қол жетімділікті қамтамасыз ету. Білім алуды жеңілдету, 
+                    оқу процесін қызықты ету және әрбір оқушы мен мұғалім табысына ықпал ету.
+                </p>
+            </div>
+            
+            <div class="vision-card">
+                <div class="vision-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h2 class="vision-title">Біздің көзқарасымыз</h2>
+                <p class="vision-text">
+                    2026 жылға қарай Қазақстанның жетекші білім беру платформасына айналу 
+                    және инклюзивті білім беру жағдайында барлық педагогтерге қызмет көрсету. Технология 
+                    арқылы білім беруді революциялау және жаңа стандарттарды белгілеу.
+                </p>
+            </div>
+        </div>
+
+        <!-- История -->
+
+        <!-- Статистика -->
+
+        <!-- Команда -->
+        <div class="team-section">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i> Платформа негізін қалаушы
+            </h2>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">С</div>
+                    </div>
+                    <div class="member-name">Сиванбаева Назлым</div>
+                    <div class="member-role">Бас бағдарламалаушы</div>
+                    <div class="member-bio">
+                        Білім беру технологиялары саласында 4 жылдық тәжірибе. 
+                        Информатика пәні мұғалімі.
+                    </div>
+                    <div class="member-social">
+                        <a href="https://t.me/Naz_lym" target="_blank" class="social-icon">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://wa.me/77716597361" target="_blank" class="social-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ценности -->
+        <div class="values-section">
+            <h2 class="section-title">
+                <i class="fas fa-heart"></i> Біздің құндылықтарымыз
+            </h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="value-title">Ынтымақтастық</h3>
+                    <p class="value-description">
+                        Біз бірге жұмыс істеп, бір-бірімізді тыңдаймыз және құрметтейміз. 
+                        Командалық жұмыс - сәттілік кілті.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="value-title">Инновация</h3>
+                    <p class="value-description">
+                        Біз үнемі жаңа идеяларды іздейміз және жақсарту жолдарын табамыз. 
+                        Өзгеріске сенеміз.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="value-title">Білім беру</h3>
+                    <p class="value-description">
+                        Біз білімнің күшіне сенеміз және оны әркімге қолжетімді етуге ұмтыламыз. 
+                        Білім - болашақтың кілті.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="value-title">Сенімділік</h3>
+                    <p class="value-description">
+                        Біз адалдықпен жұмыс істейміз және өз уәделерімізді орындаймыз. 
+                        Сенім - негізгі қарым-қатынастың негізі.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Награды -->
+       
+
+        <!-- Призыв к действию -->
+        <div class="cta-section">
+            <h2 class="cta-title">Бізбен бірге болыңыз</h2>
+            <p style="font-size: 1.3rem; opacity: 0.95; max-width: 800px; margin: 0 auto;">
+                Білім берудің болашағын бірге құрайық. Бізбен ынтымақтасуға, 
+                жобаға қосылуға немесе қолдау көрсетуге дайынсыз ба?
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="contact.html" class="cta-btn cta-btn-primary">
+                    <i class="fas fa-envelope"></i> Байланысқа шығу
+                </a>
+                <a href="careers.html" class="cta-btn cta-btn-secondary">
+                    <i class="fas fa-briefcase"></i> Вакансиялар
+                </a>
+                <a href="partners.html" class="cta-btn cta-btn-secondary">
+                    <i class="fas fa-handshake"></i> Серіктестік
+                </a>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <div class="footer-content">
+                <h2 style="font-size: 2rem; margin-bottom: 20px;">EduAssist</h2>
+                <p style="opacity: 0.9; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Білім беруді жеңілдетуге және тиімді етуге арналған инновациялық платформа. 
+                    Біз әрбір оқушының табысына ықпал етеміз.
+                </p>
+                
+                <div class="footer-links">
+                    <a href="index.html" class="footer-link">Басты бет</a>
+                    <a href="guides.html" class="footer-link">Нұсқаулықтар</a>
+                    <a href="faq.html" class="footer-link">Жиі қойылатын сұрақтар</a>
+                    <a href="support.html" class="footer-link">Қолдау қызметі</a>
+                    <a href="contact.html" class="footer-link">Байланыс</a>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://t.me/Naz_lym" target="_blank" class="social-link">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://wa.me/77716597361" target="_blank" class="social-link">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="mailto:naz_sivanbayeva@mail.ru" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+                
+                <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 30px;">
+                    © 2025 EduAssist<br>
+                    Астана, Қазақстан | naz_sivanbayeva@mail.ru | +7 (771) 659-73-61
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функция для возврата назад
+            window.goBack = function() {
+                if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                    window.history.back();
+                } else {
+                    // Если нет предыдущей страницы в истории или она с другого домена
+                    window.location.href = 'index.html';
+                }
+            };
+            
+            // Анимация статистики
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const finalNumber = parseInt(stat.textContent.replace('+', ''));
+                const duration = 2000; // 2 секунды
+                const steps = 60;
+                const increment = finalNumber / steps;
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= finalNumber) {
+                        current = finalNumber;
+                        clearInterval(timer);
+                    }
+                    
+                    if (stat.textContent.includes('+')) {
+                        stat.textContent = Math.floor(current) + '+';
+                    } else if (stat.textContent.includes('%')) {
+                        stat.textContent = current.toFixed(1) + '%';
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, duration / steps);
+            });
+            
+            // Параллакс эффект для заголовка
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const header = document.querySelector('.header');
+                if (header) {
+                    header.style.transform = `translateY(${scrolled * 0.1}px)`;
+                }
+            });
+            
+            // Анимация появления элементов при скролле
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за всеми элементами с анимацией
+            document.querySelectorAll('.mission-card, .vision-card, .timeline-item, .team-member, .value-card, .award-card').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(item);
+            });
+            
+            // Анимация временной шкалы
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.transitionDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

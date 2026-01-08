@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менің материалдарым - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #4a8af4;
+            --secondary-color: #3a76d5;
+            --text-color: #333;
+            --bg-color: #f5f7fa;
+            --card-bg: white;
+            --header-bg: linear-gradient(90deg, #3a76d5, #4a8af4);
+        }
+
+        body {
+            background: var(--bg-color);
+            min-height: 100vh;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-size: 100%;
+            letter-spacing: normal;
+        }
+
+        body.dark-mode {
+            --primary-color: #5a9aff;
+            --secondary-color: #4a8af4;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --header-bg: linear-gradient(90deg, #2c5282, #2b6cb0);
+        }
+
+        body.accessibility-mode {
+            background: #fff !important;
+            color: #000 !important;
+        }
+
+        body.accessibility-mode .container {
+            background: #fff;
+        }
+
+        body.accessibility-mode .header,
+        body.accessibility-mode .controls,
+        body.accessibility-mode .folders-section,
+        body.accessibility-mode .material-card,
+        body.accessibility-mode .empty-state {
+            background: #fff !important;
+            border: 2px solid #000 !important;
+            color: #000 !important;
+        }
+
+        body.accessibility-mode .material-title,
+        body.accessibility-mode h1,
+        body.accessibility-mode h2,
+        body.accessibility-mode h3,
+        body.accessibility-mode h4 {
+            color: #000 !important;
+        }
+
+        body.accessibility-mode .btn-action,
+        body.accessibility-mode .btn-upload,
+        body.accessibility-mode .btn-folder {
+            background: #000 !important;
+            color: #fff !important;
+            border: 2px solid #000 !important;
+        }
+
+        body.accessibility-mode .btn-action:hover,
+        body.accessibility-mode .btn-upload:hover,
+        body.accessibility-mode .btn-folder:hover {
+            background: #333 !important;
+        }
+
+        body.accessibility-mode .modal-content {
+            background: #fff !important;
+            border: 2px solid #000 !important;
+            color: #000 !important;
+        }
+
+        body.accessibility-mode .modal-input,
+        body.accessibility-mode .modal-textarea,
+        body.accessibility-mode .modal-select,
+        body.accessibility-mode .filter-select,
+        body.accessibility-mode .search-box input {
+            background: #fff !important;
+            border: 2px solid #000 !important;
+            color: #000 !important;
+        }
+
+        /* Верхняя панель */
+        .top-bar {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .top-bar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accessibility-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 5px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .accessibility-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .accessibility-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .accessibility-panel {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1001;
+            display: none;
+            min-width: 250px;
+        }
+
+        .accessibility-panel.active {
+            display: block;
+        }
+
+        .accessibility-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .accessibility-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .accessibility-option:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .accessibility-option label {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .font-size-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .font-btn {
+            background: #f0f7ff;
+            border: 1px solid #d1e3ff;
+            color: #2c3e50;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .font-btn:hover {
+            background: #e1eeff;
+        }
+
+        /* Контейнер */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: var(--header-bg);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Фильтры и поиск */
+        .controls {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        @media (max-width: 992px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 45px 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .btn-upload {
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-upload:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn-folder {
+            background: #2c3e50;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-folder:hover {
+            background: #1a252f;
+        }
+
+        /* Папки */
+        .folders-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .folders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .folders-header h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .folder-card {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #d1e3ff;
+            position: relative;
+        }
+
+        .folder-card:hover {
+            background: #e1eeff;
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+
+        .folder-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .folder-card h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .folder-count {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .folder-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .folder-card:hover .folder-actions {
+            opacity: 1;
+        }
+
+        .folder-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .folder-btn:hover {
+            background: white;
+        }
+
+        /* Сетка материалов */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .materials-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .materials-grid.list-view .material-card {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .materials-grid.list-view .material-header {
+            flex: 2;
+        }
+
+        .materials-grid.list-view .material-body {
+            flex: 3;
+        }
+
+        .materials-grid.compact-view {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .materials-grid.compact-view .material-card {
+            padding: 10px;
+        }
+
+        .materials-grid.compact-view .material-description {
+            display: none;
+        }
+
+        .material-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eaeaea;
+        }
+
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(58, 118, 213, 0.1);
+        }
+
+        .material-header {
+            padding: 25px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .material-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .material-body {
+            padding: 25px;
+        }
+
+        .material-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-download {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn-delete {
+            background: #f0f7ff;
+            color: var(--text-color);
+            border: 1px solid #d1e3ff;
+        }
+
+        .btn-delete:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #555;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .page-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 2px dashed #d1e3ff;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #a8c6ff;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 20px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #f0f7ff;
+        }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: var(--text-color);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 50px 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: background 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #f0f7ff;
+        }
+
+        .upload-area i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .upload-area small {
+            color: #999;
+            display: block;
+            margin-top: 10px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .remove-file {
+            color: #ff6b6b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .modal-input, .modal-textarea, .modal-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .modal-input:focus, .modal-textarea:focus, .modal-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .modal-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--secondary-color);
+        }
+
+        .modal-btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #ff6b6b;
+        }
+
+        .notification.success {
+            background: var(--primary-color);
+        }
+
+        /* Кнопки сохранения */
+        .save-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-save, .btn-reset {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover, .btn-reset:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-reset {
+            background: #ff6b6b;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .top-bar-content {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .accessibility-controls {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            
+            .accessibility-panel {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .save-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .btn-save, .btn-reset {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Глобальная система сохранения состояния -->
+    <script>
+    class UserStateManager {
+        constructor() {
+            this.userId = null;
+            this.stateKey = 'eduassist_user_state_';
+            this.defaultState = {
+                language: 'kk',
+                accessibility: {
+                    highContrast: false,
+                    fontSize: 100,
+                    letterSpacing: false,
+                    readableFont: false
+                },
+                theme: {
+                    darkMode: false
+                },
+                layout: {
+                    cardView: 'grid'
+                },
+                materials: {
+                    filters: {
+                        subject: '',
+                        format: '',
+                        search: ''
+                    },
+                    sortBy: 'date',
+                    sortOrder: 'desc'
+                },
+                personal: {
+                    autoSave: true
+                }
+            };
+            this.state = {...this.defaultState};
+        }
+
+        init(userId = 'guest') {
+            this.userId = userId;
+            this.loadState();
+            return this;
+        }
+
+        loadState() {
+            try {
+                const saved = localStorage.getItem(this.stateKey + this.userId);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    this.state = this.mergeDeep(this.defaultState, parsed);
+                }
+                this.applyState();
+                return this.state;
+            } catch (error) {
+                console.error('Ошибка загрузки состояния:', error);
+                return this.state;
+            }
+        }
+
+        saveState() {
+            if (!this.userId) return;
+            
+            try {
+                // Автоматическое сохранение данных форм
+                this.saveFormData();
+                
+                localStorage.setItem(this.stateKey + this.userId, JSON.stringify(this.state));
+                console.log('Состояние сохранено');
+                
+                // Сохранение в Firebase если доступно
+                if (typeof firebase !== 'undefined' && this.userId !== 'guest') {
+                    this.saveToFirebase();
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+            }
+        }
+
+        async saveToFirebase() {
+            try {
+                const db = firebase.firestore();
+                await db.collection('userSettings').doc(this.userId).set({
+                    state: this.state,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            } catch (error) {
+                console.error('Ошибка Firebase:', error);
+            }
+        }
+
+        async loadFromFirebase() {
+            if (typeof firebase === 'undefined' || this.userId === 'guest') return;
+            
+            try {
+                const db = firebase.firestore();
+                const doc = await db.collection('userSettings').doc(this.userId).get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.state) {
+                        this.state = this.mergeDeep(this.defaultState, data.state);
+                        this.applyState();
+                        this.saveState(); // Синхронизация с localStorage
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки из Firebase:', error);
+            }
+        }
+
+        update(path, value) {
+            const keys = path.split('.');
+            let obj = this.state;
+            
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!obj[keys[i]]) obj[keys[i]] = {};
+                obj = obj[keys[i]];
+            }
+            
+            obj[keys[keys.length - 1]] = value;
+            this.saveState();
+            
+            // Применяем изменение немедленно
+            this.applyChange(path, value);
+        }
+
+        get(path) {
+            const keys = path.split('.');
+            let obj = this.state;
+            
+            for (const key of keys) {
+                if (obj && typeof obj === 'object' && key in obj) {
+                    obj = obj[key];
+                } else {
+                    return undefined;
+                }
+            }
+            return obj;
+        }
+
+        applyState() {
+            // Применяем язык
+            const lang = this.get('language') || 'kk';
+            this.changeLanguage(lang);
+            
+            // Применяем тему
+            const darkMode = this.get('theme.darkMode') || false;
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Применяем доступность
+            const accessibility = this.get('accessibility');
+            if (accessibility) {
+                this.applyAccessibility(accessibility);
+            }
+            
+            // Применяем вид материалов
+            const cardView = this.get('layout.cardView') || 'grid';
+            this.applyCardView(cardView);
+            
+            // Восстанавливаем фильтры
+            const filters = this.get('materials.filters');
+            if (filters) {
+                this.restoreFilters(filters);
+            }
+        }
+
+        applyChange(path, value) {
+            switch(path) {
+                case 'language':
+                    this.changeLanguage(value);
+                    break;
+                case 'theme.darkMode':
+                    if (value) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                    break;
+                case 'accessibility':
+                    this.applyAccessibility(value);
+                    break;
+                case 'layout.cardView':
+                    this.applyCardView(value);
+                    break;
+            }
+        }
+
+        changeLanguage(lang) {
+            const translations = window.translations || {};
+            if (translations[lang]) {
+                document.querySelectorAll('[data-translate]').forEach(el => {
+                    const key = el.dataset.translate;
+                    if (translations[lang][key]) {
+                        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                            el.placeholder = translations[lang][key];
+                        } else {
+                            el.textContent = translations[lang][key];
+                        }
+                    }
+                });
+                
+                // Обновляем активную кнопку языка
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                
+                // Обновляем заголовок страницы
+                document.title = (translations[lang].my_materials || 'Мои материалы') + ' - EduAssist';
+            }
+        }
+
+        applyAccessibility(settings) {
+            // Размер шрифта
+            document.documentElement.style.fontSize = settings.fontSize + '%';
+            const fontSizeDisplay = document.getElementById('currentFontSize');
+            if (fontSizeDisplay) fontSizeDisplay.textContent = settings.fontSize + '%';
+            
+            // Высокая контрастность
+            if (settings.highContrast) {
+                document.body.classList.add('accessibility-mode');
+            } else {
+                document.body.classList.remove('accessibility-mode');
+            }
+            
+            // Межбуквенный интервал
+            document.body.style.letterSpacing = settings.letterSpacing ? '1px' : 'normal';
+            
+            // Читаемый шрифт
+            document.body.style.fontFamily = settings.readableFont 
+                ? 'Arial, sans-serif' 
+                : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            
+            // Обновляем переключатели
+            const highContrast = document.getElementById('highContrast');
+            const letterSpacing = document.getElementById('letterSpacing');
+            const readableFont = document.getElementById('readableFont');
+            
+            if (highContrast) highContrast.checked = settings.highContrast;
+            if (letterSpacing) letterSpacing.checked = settings.letterSpacing;
+            if (readableFont) readableFont.checked = settings.readableFont;
+        }
+
+        applyCardView(view) {
+            const grid = document.getElementById('materialsGrid');
+            if (!grid) return;
+            
+            grid.className = 'materials-grid ' + view + '-view';
+        }
+
+        saveFormData() {
+            const formData = {};
+            
+            // Сохраняем значения фильтров
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) formData.search = searchInput.value;
+            
+            const subjectSelect = document.querySelectorAll('.filter-select')[0];
+            if (subjectSelect) formData.subject = subjectSelect.value;
+            
+            const formatSelect = document.querySelectorAll('.filter-select')[1];
+            if (formatSelect) formData.format = formatSelect.value;
+            
+            this.update('materials.filters', formData);
+        }
+
+        restoreFilters(filters) {
+            setTimeout(() => {
+                const searchInput = document.querySelector('.search-box input');
+                if (searchInput && filters.search) searchInput.value = filters.search;
+                
+                const subjectSelect = document.querySelectorAll('.filter-select')[0];
+                if (subjectSelect && filters.subject) subjectSelect.value = filters.subject;
+                
+                const formatSelect = document.querySelectorAll('.filter-select')[1];
+                if (formatSelect && filters.format) formatSelect.value = filters.format;
+            }, 100);
+        }
+
+        resetToDefaults() {
+            this.state = {...this.defaultState};
+            localStorage.removeItem(this.stateKey + this.userId);
+            this.applyState();
+            location.reload();
+        }
+
+        mergeDeep(target, source) {
+            const output = {...target};
+            if (this.isObject(target) && this.isObject(source)) {
+                Object.keys(source).forEach(key => {
+                    if (this.isObject(source[key])) {
+                        if (!(key in target)) {
+                            output[key] = source[key];
+                        } else {
+                            output[key] = this.mergeDeep(target[key], source[key]);
+                        }
+                    } else {
+                        output[key] = source[key];
+                    }
+                });
+            }
+            return output;
+        }
+
+        isObject(item) {
+            return item && typeof item === 'object' && !Array.isArray(item);
+        }
+    }
+
+    // Глобальный экземпляр
+    window.userState = new UserStateManager();
+    </script>
+
+    <!-- Верхняя панель -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div class="logo">
+                <span style="font-weight: bold; color: #4a8af4;">EduAssist</span>
+            </div>
+            <div class="accessibility-controls">
+                <div class="language-switcher">
+                    <button class="lang-btn" data-lang="kk">Қаз</button>
+                    <button class="lang-btn" data-lang="ru">Рус</button>
+                    <button class="lang-btn" data-lang="en">Eng</button>
+                </div>
+                <button class="theme-toggle" id="themeToggle" title="Темная тема">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="accessibility-btn" id="accessibilityToggle">
+                    <i class="fas fa-eye"></i> <span data-translate="accessibility_mode">Көру мүмкіндігі шектеулілерге</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Панель настроек доступности -->
+    <div class="accessibility-panel" id="accessibilityPanel">
+        <h3><i class="fas fa-universal-access"></i> <span data-translate="accessibility_settings">Қолжетімділік баптаулары</span></h3>
+        
+        <div class="accessibility-option">
+            <label for="highContrast" data-translate="high_contrast">Жоғары контрастты режим</label>
+            <label class="switch">
+                <input type="checkbox" id="highContrast">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="accessibility-option">
+            <label for="textSize" data-translate="text_size">Мәтін өлшемі</label>
+            <div class="font-size-controls">
+                <button class="font-btn" id="decreaseFont">A-</button>
+                <span id="currentFontSize">100%</span>
+                <button class="font-btn" id="increaseFont">A+</button>
+            </div>
+        </div>
+        
+        <div class="accessibility-option">
+            <label for="letterSpacing" data-translate="letter_spacing">Әріптер аралығы</label>
+            <label class="switch">
+                <input type="checkbox" id="letterSpacing">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="accessibility-option">
+            <label for="readableFont" data-translate="readable_font">Оқуға ыңғайлы қаріп</label>
+            <label class="switch">
+                <input type="checkbox" id="readableFont">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Навигация назад -->
+        <div class="nav-back">
+            <a onclick="window.location.href='personal-cabinet.html'">
+                <i class="fas fa-arrow-left"></i> <span data-translate="back">Кері қайту</span>
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-cloud-upload-alt"></i> <span data-translate="my_materials">Менің материалдарым</span></h1>
+            <p data-translate="manage_materials">Жүктелген материалдарды басқарыңыз және реттеңіз</p>
+        </div>
+
+        <!-- Фильтры и поиск -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" placeholder="Материалдарды іздеу..." data-translate="search_placeholder">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <select class="filter-select">
+                <option value="" data-translate="all_subjects">Барлық пәндер</option>
+                <option value="math">Математика</option>
+                <option value="physics">Физика</option>
+                <option value="kazakh">Қазақ тілі</option>
+                <option value="history">Тарих</option>
+            </select>
+            
+            <select class="filter-select">
+                <option value="" data-translate="all_formats">Барлық форматтар</option>
+                <option value="pdf">PDF</option>
+                <option value="doc">DOC</option>
+                <option value="ppt">PPT</option>
+                <option value="video">Бейне</option>
+            </select>
+            
+            <button class="btn-folder" id="createFolderBtn">
+                <i class="fas fa-folder-plus"></i> <span data-translate="new_folder">Жаңа папка</span>
+            </button>
+            
+            <button class="btn-upload" id="openUploadModal">
+                <i class="fas fa-plus"></i> <span data-translate="new_upload">Жаңа жүктеу</span>
+            </button>
+        </div>
+
+        <!-- Вид отображения -->
+        <div class="view-controls" style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button class="view-btn" data-view="grid" title="Сетка">
+                <i class="fas fa-th"></i>
+            </button>
+            <button class="view-btn" data-view="list" title="Список">
+                <i class="fas fa-list"></i>
+            </button>
+            <button class="view-btn" data-view="compact" title="Компактно">
+                <i class="fas fa-th-large"></i>
+            </button>
+        </div>
+
+        <!-- Папки -->
+        <div class="folders-section">
+            <div class="folders-header">
+                <h2><i class="fas fa-folder"></i> <span data-translate="folders">Папкалар</span></h2>
+                <span id="foldersCount">3 папка</span>
+            </div>
+            <div class="folders-grid" id="foldersGrid">
+                <!-- Папки будут создаваться динамически -->
+                <div class="folder-card" data-folder="matematika">
+                    <div class="folder-actions">
+                        <button class="folder-btn" title="Өшіру" onclick="deleteFolder('matematika')">
+                            <i class="fas fa-trash" style="color: #ff6b6b;"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-graduation-cap"></i>
+                    <h4>Математика</h4>
+                    <div class="folder-count">2 материал</div>
+                </div>
+
+                <div class="folder-card" data-folder="fizika">
+                    <div class="folder-actions">
+                        <button class="folder-btn" title="Өшіру" onclick="deleteFolder('fizika')">
+                            <i class="fas fa-trash" style="color: #ff6b6b;"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-flask"></i>
+                    <h4>Физика</h4>
+                    <div class="folder-count">1 материал</div>
+                </div>
+
+                <div class="folder-card" data-folder="adebiet">
+                    <div class="folder-actions">
+                        <button class="folder-btn" title="Өшіру" onclick="deleteFolder('adebiet')">
+                            <i class="fas fa-trash" style="color: #ff6b6b;"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-book"></i>
+                    <h4>Әдебиет</h4>
+                    <div class="folder-count">0 материал</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сетка материалов -->
+        <div class="materials-grid" id="materialsGrid">
+            <!-- Материалы будут загружены через JavaScript -->
+            <div class="material-card" data-folder="matematika">
+                <div class="material-header">
+                    <div class="material-title">Математика - Туынды тақырыбы</div>
+                    <div class="material-meta">
+                        <span>PDF</span>
+                        <span>12.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Туынды ұғымы, оны есептеу әдістері және практикалық есептер
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-download"></i> 145</span>
+                        <span><i class="far fa-eye"></i> 320</span>
+                        <span><i class="far fa-star"></i> 45</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-download">
+                            <i class="fas fa-download"></i> <span data-translate="download">Жүктеу</span>
+                        </button>
+                        <button class="btn-action btn-delete">
+                            <i class="fas fa-trash"></i> <span data-translate="delete">Жою</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="material-card" data-folder="fizika">
+                <div class="material-header">
+                    <div class="material-title">Физика - Заттың күйлері</div>
+                    <div class="material-meta">
+                        <span>PPT</span>
+                        <span>10.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Заттың қатты, сұйық және газ тәрізді күйдері, фазалық ауысулар
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-download"></i> 89</span>
+                        <span><i class="far fa-eye"></i> 210</span>
+                        <span><i class="far fa-star"></i> 32</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-download">
+                            <i class="fas fa-download"></i> <span data-translate="download">Жүктеу</span>
+                        </button>
+                        <button class="btn-action btn-delete">
+                            <i class="fas fa-trash"></i> <span data-translate="delete">Жою</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="material-card" data-folder="matematika">
+                <div class="material-header">
+                    <div class="material-title">Қазақ әдебиеті - Абай шығармашылығы</div>
+                    <div class="material-meta">
+                        <span>DOC</span>
+                        <span>05.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Абай Құнанбаевтың өмірі мен шығармашылығы, әдебиетке қосқан үлесі
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-download"></i> 120</span>
+                        <span><i class="far fa-eye"></i> 280</span>
+                        <span><i class="far fa-star"></i> 67</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-download">
+                            <i class="fas fa-download"></i> <span data-translate="download">Жүктеу</span>
+                        </button>
+                        <button class="btn-action btn-delete">
+                            <i class="fas fa-trash"></i> <span data-translate="delete">Жою</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пагинация -->
+        <div class="pagination">
+            <a class="page-btn"><i class="fas fa-chevron-left"></i></a>
+            <a class="page-btn active">1</a>
+            <a class="page-btn">2</a>
+            <a class="page-btn">3</a>
+            <a class="page-btn"><i class="fas fa-chevron-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Модальное окно для загрузки файла -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> <span data-translate="upload_material">Материал жүктеу</span></h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p data-translate="drag_drop">Файлды осы жерге тартыңыз немесе басыңыз</p>
+                    <small data-translate="file_restrictions">PDF, DOC, PPT, JPG, PNG, MP4 (максималды өлшемі: 50MB)</small>
+                    <input type="file" id="fileInput" multiple>
+                </div>
+                
+                <div class="file-info" id="fileInfo">
+                    <div class="file-name" id="fileName">Файл атауы</div>
+                    <div class="file-size" id="fileSize">0 MB</div>
+                    <button class="remove-file" id="removeFile" data-translate="remove_file">Файлды жою</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="material_name">Материал атауы</label>
+                    <input type="text" class="modal-input" id="materialName" data-translate="material_name_placeholder" placeholder="Материал атауын енгізіңіз">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="subject">Пән</label>
+                    <select class="modal-select" id="materialSubject">
+                        <option value="" data-translate="select_subject">Пәнді таңдаңыз</option>
+                        <option value="math">Математика</option>
+                        <option value="physics">Физика</option>
+                        <option value="kazakh">Қазақ тілі</option>
+                        <option value="russian">Орыс тілі</option>
+                        <option value="history">Тарих</option>
+                        <option value="biology">Биология</option>
+                        <option value="chemistry">Химия</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="grade">Сынып</label>
+                    <select class="modal-select" id="materialGrade">
+                        <option value="" data-translate="select_grade">Сыныпты таңдаңыз</option>
+                        <option value="7">7 сынып</option>
+                        <option value="8">8 сынып</option>
+                        <option value="9">9 сынып</option>
+                        <option value="10">10 сынып</option>
+                        <option value="11">11 сынып</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="folder">Папка</label>
+                    <select class="modal-select" id="materialFolder">
+                        <option value="" data-translate="general">Жалпы</option>
+                        <!-- Папки будут добавлены динамически -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="description">Сипаттама</label>
+                    <textarea class="modal-textarea" id="materialDescription" data-translate="description_placeholder" placeholder="Материалдың қысқаша сипаттамасы..." rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="cancelUpload">
+                    <i class="fas fa-times"></i> <span data-translate="cancel">Болдырмау</span>
+                </button>
+                <button class="modal-btn modal-btn-primary" id="uploadFileBtn">
+                    <i class="fas fa-upload"></i> <span data-translate="upload">Жүктеу</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для создания папки -->
+    <div class="modal-overlay" id="folderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-folder-plus"></i> <span data-translate="new_folder">Жаңа папка</span></h2>
+                <button class="modal-close" id="closeFolderModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" data-translate="folder_name">Папка атауы</label>
+                    <input type="text" class="modal-input" id="folderName" data-translate="folder_name_placeholder" placeholder="Папканың атауын енгізіңіз">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="related_subject">Әріптес пәні (міндетті емес)</label>
+                    <select class="modal-select" id="folderSubject">
+                        <option value="" data-translate="select_subject">Пәнді таңдаңыз</option>
+                        <option value="math">Математика</option>
+                        <option value="physics">Физика</option>
+                        <option value="kazakh">Қазақ тілі</option>
+                        <option value="russian">Орыс тілі</option>
+                        <option value="history">Тарих</option>
+                        <option value="biology">Биология</option>
+                        <option value="chemistry">Химия</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="description">Сипаттама (міндетті емес)</label>
+                    <textarea class="modal-textarea" id="folderDescription" data-translate="folder_description_placeholder" placeholder="Папканың қысқаша сипаттамасы..." rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="cancelFolder">
+                    <i class="fas fa-times"></i> <span data-translate="cancel">Болдырмау</span>
+                </button>
+                <button class="modal-btn modal-btn-primary" id="createFolder">
+                    <i class="fas fa-plus"></i> <span data-translate="create">Құру</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки управления сохранением -->
+    <div class="save-controls">
+        <button class="btn-save" onclick="window.userState.saveState()" title="Сохранить настройки">
+            <i class="fas fa-save"></i>
+        </button>
+        <button class="btn-reset" onclick="resetSettings()" title="Сбросить настройки">
+            <i class="fas fa-undo"></i>
+        </button>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Материал сәтті жүктелді!</span>
+    </div>
+
+    <!-- Основной скрипт -->
+    <script>
+        // Переводы
+        window.translations = {
+            kk: {
+                back: "Кері қайту",
+                my_materials: "Менің материалдарым",
+                manage_materials: "Жүктелген материалдарды басқарыңыз және реттеңіз",
+                search_placeholder: "Материалдарды іздеу...",
+                all_subjects: "Барлық пәндер",
+                all_formats: "Барлық форматтар",
+                new_folder: "Жаңа папка",
+                new_upload: "Жаңа жүктеу",
+                folders: "Папкалар",
+                download: "Жүктеу",
+                delete: "Жою",
+                upload_material: "Материал жүктеу",
+                drag_drop: "Файлды осы жерге тартыңыз немесе басыңыз",
+                file_restrictions: "PDF, DOC, PPT, JPG, PNG, MP4 (максималды өлшемі: 50MB)",
+                remove_file: "Файлды жою",
+                material_name: "Материал атауы",
+                material_name_placeholder: "Материал атауын енгізіңіз",
+                subject: "Пән",
+                select_subject: "Пәнді таңдаңыз",
+                grade: "Сынып",
+                select_grade: "Сыныпты таңдаңыз",
+                folder: "Папка",
+                general: "Жалпы",
+                description: "Сипаттама",
+                description_placeholder: "Материалдың қысқаша сипаттамасы...",
+                cancel: "Болдырмау",
+                upload: "Жүктеу",
+                folder_name: "Папка атауы",
+                folder_name_placeholder: "Папканың атауын енгізіңіз",
+                related_subject: "Әріптес пәні (міндетті емес)",
+                folder_description_placeholder: "Папканың қысқаша сипаттамасы...",
+                create: "Құру",
+                accessibility_settings: "Қолжетімділік баптаулары",
+                high_contrast: "Жоғары контрастты режим",
+                text_size: "Мәтін өлшемі",
+                letter_spacing: "Әріптер аралығы",
+                readable_font: "Оқуға ыңғайлы қаріп",
+                accessibility_mode: "Көру мүмкіндігі шектеулілерге"
+            },
+            ru: {
+                back: "Назад",
+                my_materials: "Мои материалы",
+                manage_materials: "Управление и редактирование загруженных материалов",
+                search_placeholder: "Поиск материалов...",
+                all_subjects: "Все предметы",
+                all_formats: "Все форматы",
+                new_folder: "Новая папка",
+                new_upload: "Новая загрузка",
+                folders: "Папки",
+                download: "Скачать",
+                delete: "Удалить",
+                upload_material: "Загрузка материала",
+                drag_drop: "Перетащите файл сюда или нажмите",
+                file_restrictions: "PDF, DOC, PPT, JPG, PNG, MP4 (максимальный размер: 50MB)",
+                remove_file: "Удалить файл",
+                material_name: "Название материала",
+                material_name_placeholder: "Введите название материала",
+                subject: "Предмет",
+                select_subject: "Выберите предмет",
+                grade: "Класс",
+                select_grade: "Выберите класс",
+                folder: "Папка",
+                general: "Общие",
+                description: "Описание",
+                description_placeholder: "Краткое описание материала...",
+                cancel: "Отмена",
+                upload: "Загрузить",
+                folder_name: "Название папки",
+                folder_name_placeholder: "Введите название папки",
+                related_subject: "Связанный предмет (необязательно)",
+                folder_description_placeholder: "Краткое описание папки...",
+                create: "Создать",
+                accessibility_settings: "Настройки доступности",
+                high_contrast: "Режим высокой контрастности",
+                text_size: "Размер текста",
+                letter_spacing: "Межбуквенный интервал",
+                readable_font: "Удобный для чтения шрифт",
+                accessibility_mode: "Для слабовидящих"
+            },
+            en: {
+                back: "Back",
+                my_materials: "My Materials",
+                manage_materials: "Manage and edit uploaded materials",
+                search_placeholder: "Search materials...",
+                all_subjects: "All subjects",
+                all_formats: "All formats",
+                new_folder: "New folder",
+                new_upload: "New upload",
+                folders: "Folders",
+                download: "Download",
+                delete: "Delete",
+                upload_material: "Upload Material",
+                drag_drop: "Drag and drop file here or click",
+                file_restrictions: "PDF, DOC, PPT, JPG, PNG, MP4 (max size: 50MB)",
+                remove_file: "Remove file",
+                material_name: "Material name",
+                material_name_placeholder: "Enter material name",
+                subject: "Subject",
+                select_subject: "Select subject",
+                grade: "Grade",
+                select_grade: "Select grade",
+                folder: "Folder",
+                general: "General",
+                description: "Description",
+                description_placeholder: "Brief description of the material...",
+                cancel: "Cancel",
+                upload: "Upload",
+                folder_name: "Folder name",
+                folder_name_placeholder: "Enter folder name",
+                related_subject: "Related subject (optional)",
+                folder_description_placeholder: "Brief description of the folder...",
+                create: "Create",
+                accessibility_settings: "Accessibility Settings",
+                high_contrast: "High contrast mode",
+                text_size: "Text size",
+                letter_spacing: "Letter spacing",
+                readable_font: "Readable font",
+                accessibility_mode: "For visually impaired"
+            }
+        };
+
+        // Функции для папок
+        const folders = [
+            { id: 'matematika', name: 'Математика', count: 2, icon: 'fa-graduation-cap' },
+            { id: 'fizika', name: 'Физика', count: 1, icon: 'fa-flask' },
+            { id: 'adebiet', name: 'Әдебиет', count: 0, icon: 'fa-book' }
+        ];
+
+        function deleteFolder(folderId) {
+            const folder = folders.find(f => f.id === folderId);
+            if (!folder) return;
+            
+            const lang = window.userState.get('language') || 'kk';
+            const texts = {
+                kk: {
+                    confirm: `"${folder.name}" папкасын шынымен жойғыңыз келе ме?`,
+                    success: `"${folder.name}" папкасы жойылды`
+                },
+                ru: {
+                    confirm: `Вы действительно хотите удалить папку "${folder.name}"?`,
+                    success: `Папка "${folder.name}" удалена`
+                },
+                en: {
+                    confirm: `Are you sure you want to delete the "${folder.name}" folder?`,
+                    success: `Folder "${folder.name}" deleted`
+                }
+            };
+            
+            if (confirm(texts[lang].confirm)) {
+                const index = folders.findIndex(f => f.id === folderId);
+                folders.splice(index, 1);
+                updateFoldersDisplay();
+                
+                document.querySelectorAll(`.material-card[data-folder="${folderId}"]`).forEach(card => {
+                    card.removeAttribute('data-folder');
+                });
+                
+                showNotification(texts[lang].success, 'success');
+            }
+        }
+
+        function updateFoldersDisplay() {
+            const foldersGrid = document.getElementById('foldersGrid');
+            const foldersCount = document.getElementById('foldersCount');
+            
+            foldersGrid.innerHTML = '';
+            
+            folders.forEach(folder => {
+                const folderCard = document.createElement('div');
+                folderCard.className = 'folder-card';
+                folderCard.setAttribute('data-folder', folder.id);
+                folderCard.innerHTML = `
+                    <div class="folder-actions">
+                        <button class="folder-btn" title="Өшіру" onclick="deleteFolder('${folder.id}')">
+                            <i class="fas fa-trash" style="color: #ff6b6b;"></i>
+                        </button>
+                    </div>
+                    <i class="fas ${folder.icon}"></i>
+                    <h4>${folder.name}</h4>
+                    <div class="folder-count">${folder.count} материал</div>
+                `;
+                
+                foldersGrid.appendChild(folderCard);
+            });
+            
+            foldersCount.textContent = `${folders.length} папка`;
+            updateFolderSelect();
+        }
+
+        function updateFolderSelect() {
+            const folderSelect = document.getElementById('materialFolder');
+            folderSelect.innerHTML = '<option value="">Жалпы</option>';
+            
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = folder.name;
+                folderSelect.appendChild(option);
+            });
+        }
+
+        function createNewFolder(name, subject, description) {
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+            let icon = 'fa-folder';
+            
+            if (subject === 'math') icon = 'fa-graduation-cap';
+            else if (subject === 'physics') icon = 'fa-flask';
+            else if (subject === 'kazakh' || subject === 'russian') icon = 'fa-book';
+            else if (subject === 'history') icon = 'fa-landmark';
+            else if (subject === 'biology') icon = 'fa-dna';
+            else if (subject === 'chemistry') icon = 'fa-vial';
+            
+            folders.push({
+                id: id,
+                name: name,
+                count: 0,
+                icon: icon,
+                subject: subject,
+                description: description
+            });
+            
+            updateFoldersDisplay();
+            return id;
+        }
+
+        // Основная инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация системы состояния
+            window.userState.init('guest');
+            
+            // Проверяем Firebase аутентификацию
+            if (typeof firebase !== 'undefined') {
+                firebase.auth().onAuthStateChanged((user) => {
+                    if (user) {
+                        window.userState.init(user.uid);
+                        window.userState.loadFromFirebase();
+                    }
+                });
+            }
+            
+            // Инициализация интерфейса
+            initInterface();
+            initMaterialFunctionality();
+        });
+
+        function initInterface() {
+            // Переключение языка
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    window.userState.update('language', lang);
+                });
+            });
+            
+            // Переключение темы
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const darkMode = !document.body.classList.contains('dark-mode');
+                    document.body.classList.toggle('dark-mode', darkMode);
+                    window.userState.update('theme.darkMode', darkMode);
+                });
+            }
+            
+            // Панель доступности
+            const accessibilityToggle = document.getElementById('accessibilityToggle');
+            const accessibilityPanel = document.getElementById('accessibilityPanel');
+            
+            if (accessibilityToggle) {
+                accessibilityToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    accessibilityPanel.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!accessibilityPanel.contains(e.target) && e.target !== accessibilityToggle) {
+                        accessibilityPanel.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Управление доступностью
+            const highContrast = document.getElementById('highContrast');
+            const letterSpacing = document.getElementById('letterSpacing');
+            const readableFont = document.getElementById('readableFont');
+            const increaseFont = document.getElementById('increaseFont');
+            const decreaseFont = document.getElementById('decreaseFont');
+            
+            if (highContrast) {
+                highContrast.addEventListener('change', function() {
+                    window.userState.update('accessibility.highContrast', this.checked);
+                });
+            }
+            
+            if (letterSpacing) {
+                letterSpacing.addEventListener('change', function() {
+                    window.userState.update('accessibility.letterSpacing', this.checked);
+                });
+            }
+            
+            if (readableFont) {
+                readableFont.addEventListener('change', function() {
+                    window.userState.update('accessibility.readableFont', this.checked);
+                });
+            }
+            
+            if (increaseFont) {
+                increaseFont.addEventListener('click', function() {
+                    const fontSize = window.userState.get('accessibility.fontSize') || 100;
+                    if (fontSize < 150) {
+                        window.userState.update('accessibility.fontSize', fontSize + 10);
+                    }
+                });
+            }
+            
+            if (decreaseFont) {
+                decreaseFont.addEventListener('click', function() {
+                    const fontSize = window.userState.get('accessibility.fontSize') || 100;
+                    if (fontSize > 80) {
+                        window.userState.update('accessibility.fontSize', fontSize - 10);
+                    }
+                });
+            }
+            
+            // Переключение вида материалов
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const view = this.dataset.view;
+                    window.userState.update('layout.cardView', view);
+                });
+            });
+            
+            // Автоматическое сохранение фильтров
+            const searchInput = document.querySelector('.search-box input');
+            const filterSelects = document.querySelectorAll('.filter-select');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    if (window.userState.get('personal.autoSave')) {
+                        window.userState.saveState();
+                    }
+                });
+            }
+            
+            filterSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    if (window.userState.get('personal.autoSave')) {
+                        window.userState.saveState();
+                    }
+                });
+            });
+            
+            // Сохранение при закрытии страницы
+            window.addEventListener('beforeunload', function() {
+                window.userState.saveState();
+            });
+            
+            // Автосохранение каждые 30 секунд
+            setInterval(() => {
+                if (window.userState.get('personal.autoSave')) {
+                    window.userState.saveState();
+                }
+            }, 30000);
+        }
+
+        function initMaterialFunctionality() {
+            const materialsGrid = document.getElementById('materialsGrid');
+            const searchInput = document.querySelector('.search-box input');
+            const filterSubject = document.querySelectorAll('.filter-select')[0];
+            const filterFormat = document.querySelectorAll('.filter-select')[1];
+            
+            // Модальные окна
+            const uploadModal = document.getElementById('uploadModal');
+            const folderModal = document.getElementById('folderModal');
+            const openUploadModalBtn = document.getElementById('openUploadModal');
+            const createFolderBtn = document.getElementById('createFolderBtn');
+            const closeModalBtn = document.getElementById('closeModal');
+            const closeFolderModalBtn = document.getElementById('closeFolderModal');
+            const cancelUploadBtn = document.getElementById('cancelUpload');
+            const cancelFolderBtn = document.getElementById('cancelFolder');
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const removeFileBtn = document.getElementById('removeFile');
+            const uploadFileBtn = document.getElementById('uploadFileBtn');
+            const createFolderBtnModal = document.getElementById('createFolder');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            let selectedFile = null;
+            
+            updateFolderSelect();
+            
+            // Открытие модальных окон
+            if (openUploadModalBtn) {
+                openUploadModalBtn.addEventListener('click', function() {
+                    uploadModal.classList.add('active');
+                    resetUploadForm();
+                });
+            }
+            
+            if (createFolderBtn) {
+                createFolderBtn.addEventListener('click', function() {
+                    folderModal.classList.add('active');
+                    document.getElementById('folderName').value = '';
+                    document.getElementById('folderSubject').value = '';
+                    document.getElementById('folderDescription').value = '';
+                });
+            }
+            
+            // Закрытие модальных окон
+            function closeModal(modal) {
+                modal.classList.remove('active');
+            }
+            
+            if (closeModalBtn) closeModalBtn.addEventListener('click', () => closeModal(uploadModal));
+            if (closeFolderModalBtn) closeFolderModalBtn.addEventListener('click', () => closeModal(folderModal));
+            if (cancelUploadBtn) cancelUploadBtn.addEventListener('click', () => closeModal(uploadModal));
+            if (cancelFolderBtn) cancelFolderBtn.addEventListener('click', () => closeModal(folderModal));
+            
+            if (uploadModal) {
+                uploadModal.addEventListener('click', function(e) {
+                    if (e.target === uploadModal) closeModal(uploadModal);
+                });
+            }
+            
+            if (folderModal) {
+                folderModal.addEventListener('click', function(e) {
+                    if (e.target === folderModal) closeModal(folderModal);
+                });
+            }
+            
+            // Сброс формы загрузки
+            function resetUploadForm() {
+                selectedFile = null;
+                fileInfo.classList.remove('active');
+                document.getElementById('materialName').value = '';
+                document.getElementById('materialSubject').value = '';
+                document.getElementById('materialGrade').value = '';
+                document.getElementById('materialFolder').value = '';
+                document.getElementById('materialDescription').value = '';
+                fileInput.value = '';
+            }
+            
+            // Drag and drop
+            if (uploadArea) {
+                uploadArea.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.background = '#f0f7ff';
+                });
+                
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.style.background = '';
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.background = '';
+                    
+                    if (e.dataTransfer.files.length > 0) {
+                        handleFileSelect(e.dataTransfer.files[0]);
+                    }
+                });
+            }
+            
+            // Выбор файла
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        handleFileSelect(e.target.files[0]);
+                    }
+                });
+            }
+            
+            // Удаление файла
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', function() {
+                    selectedFile = null;
+                    fileInfo.classList.remove('active');
+                    fileInput.value = '';
+                });
+            }
+            
+            // Обработка файла
+            function handleFileSelect(file) {
+                if (file.size > 50 * 1024 * 1024) {
+                    showNotification('Файл өлшемі 50MB-тан аспауы керек', 'error');
+                    return;
+                }
+                
+                const validTypes = [
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-powerpoint',
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'video/mp4',
+                    'video/mpeg'
+                ];
+                
+                if (!validTypes.includes(file.type)) {
+                    showNotification('Қолдау көрсетілмейтін файл форматы', 'error');
+                    return;
+                }
+                
+                selectedFile = file;
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.classList.add('active');
+                
+                const materialName = document.getElementById('materialName');
+                if (!materialName.value) {
+                    materialName.value = file.name.replace(/\.[^/.]+$/, "");
+                }
+            }
+            
+            // Форматирование размера файла
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Байт', 'КБ', 'МБ', 'ГБ'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Создание папки
+            if (createFolderBtnModal) {
+                createFolderBtnModal.addEventListener('click', function() {
+                    const folderName = document.getElementById('folderName').value.trim();
+                    const folderSubject = document.getElementById('folderSubject').value;
+                    const folderDescription = document.getElementById('folderDescription').value.trim();
+                    
+                    if (!folderName) {
+                        showNotification('Папка атауын енгізіңіз', 'error');
+                        return;
+                    }
+                    
+                    const folderExists = folders.some(f => f.name.toLowerCase() === folderName.toLowerCase());
+                    if (folderExists) {
+                        showNotification('Бұндай атаудағы папка қазірдің өзінде бар', 'error');
+                        return;
+                    }
+                    
+                    const folderId = createNewFolder(folderName, folderSubject, folderDescription);
+                    closeModal(folderModal);
+                    showNotification(`"${folderName}" папкасы сәтті құрылды`, 'success');
+                });
+            }
+            
+            // Загрузка файла
+            if (uploadFileBtn) {
+                uploadFileBtn.addEventListener('click', function() {
+                    if (!selectedFile) {
+                        showNotification('Файл таңдаңыз', 'error');
+                        return;
+                    }
+                    
+                    const materialName = document.getElementById('materialName').value.trim();
+                    const materialSubject = document.getElementById('materialSubject').value;
+                    const materialGrade = document.getElementById('materialGrade').value;
+                    const materialFolder = document.getElementById('materialFolder').value;
+                    const materialDescription = document.getElementById('materialDescription').value.trim();
+                    
+                    if (!materialName) {
+                        showNotification('Материал атауын енгізіңіз', 'error');
+                        return;
+                    }
+                    
+                    if (!materialSubject) {
+                        showNotification('Пәнді таңдаңыз', 'error');
+                        return;
+                    }
+                    
+                    if (!materialGrade) {
+                        showNotification('Сыныпты таңдаңыз', 'error');
+                        return;
+                    }
+                    
+                    uploadFileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Жүктелуде...';
+                    uploadFileBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        const newMaterial = createMaterialCard({
+                            title: materialName,
+                            subject: materialSubject,
+                            grade: materialGrade,
+                            folder: materialFolder,
+                            description: materialDescription,
+                            fileType: getFileType(selectedFile.type),
+                            fileName: selectedFile.name
+                        });
+                        
+                        materialsGrid.insertBefore(newMaterial, materialsGrid.firstChild);
+                        
+                        if (materialFolder) {
+                            const folder = folders.find(f => f.id === materialFolder);
+                            if (folder) {
+                                folder.count++;
+                                updateFoldersDisplay();
+                            }
+                        }
+                        
+                        showNotification('Материал сәтті жүктелді!', 'success');
+                        closeModal(uploadModal);
+                        uploadFileBtn.innerHTML = '<i class="fas fa-upload"></i> Жүктеу';
+                        uploadFileBtn.disabled = false;
+                        
+                    }, 2000);
+                });
+            }
+            
+            // Определение типа файла
+            function getFileType(mimeType) {
+                const typeMap = {
+                    'application/pdf': 'PDF',
+                    'application/msword': 'DOC',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+                    'application/vnd.ms-powerpoint': 'PPT',
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PPT',
+                    'image/jpeg': 'JPG',
+                    'image/png': 'PNG',
+                    'video/mp4': 'MP4'
+                };
+                return typeMap[mimeType] || 'Файл';
+            }
+            
+            // Создание карточки материала
+            function createMaterialCard(data) {
+                const materialCard = document.createElement('div');
+                materialCard.className = 'material-card';
+                if (data.folder) {
+                    materialCard.setAttribute('data-folder', data.folder);
+                }
+                
+                materialCard.innerHTML = `
+                    <div class="material-header">
+                        <div class="material-title">${data.title}</div>
+                        <div class="material-meta">
+                            <span>${data.fileType}</span>
+                            <span>${new Date().toLocaleDateString('kk-KZ')}</span>
+                        </div>
+                    </div>
+                    <div class="material-body">
+                        <p class="material-description">
+                            ${data.description || 'Сипаттама жоқ'}
+                        </p>
+                        <div class="material-stats">
+                            <span><i class="fas fa-download"></i> 0</span>
+                            <span><i class="far fa-eye"></i> 1</span>
+                            <span><i class="far fa-star"></i> 0</span>
+                        </div>
+                        <div class="material-actions">
+                            <button class="btn-action btn-download">
+                                <i class="fas fa-download"></i> <span data-translate="download">Жүктеу</span>
+                            </button>
+                            <button class="btn-action btn-delete">
+                                <i class="fas fa-trash"></i> <span data-translate="delete">Жою</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                const downloadBtn = materialCard.querySelector('.btn-download');
+                const deleteBtn = materialCard.querySelector('.btn-delete');
+                
+                downloadBtn.addEventListener('click', function() {
+                    showNotification('Файл жүктеу іске қосылды', 'success');
+                });
+                
+                deleteBtn.addEventListener('click', function() {
+                    if (confirm('Материалды шынымен жойғыңыз келе ме?')) {
+                        const folder = materialCard.getAttribute('data-folder');
+                        
+                        if (folder) {
+                            const folderObj = folders.find(f => f.id === folder);
+                            if (folderObj && folderObj.count > 0) {
+                                folderObj.count--;
+                                updateFoldersDisplay();
+                            }
+                        }
+                        
+                        materialCard.style.opacity = '0.5';
+                        setTimeout(() => {
+                            materialCard.remove();
+                            checkEmptyState();
+                        }, 300);
+                    }
+                });
+                
+                return materialCard;
+            }
+            
+            // Функция фильтрации
+            function filterMaterials() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedSubject = filterSubject.value;
+                const selectedFormat = filterFormat.value;
+                
+                const materials = document.querySelectorAll('.material-card');
+                
+                materials.forEach(material => {
+                    const title = material.querySelector('.material-title').textContent.toLowerCase();
+                    const subject = material.querySelector('.material-meta span:first-child').textContent.toLowerCase();
+                    const format = material.querySelector('.material-meta span:nth-child(2)').textContent.toLowerCase();
+                    
+                    const matchesSearch = title.includes(searchTerm) || searchTerm === '';
+                    const matchesSubject = selectedSubject === '' || subject.includes(selectedSubject);
+                    const matchesFormat = selectedFormat === '' || format.includes(selectedFormat);
+                    
+                    if (matchesSearch && matchesSubject && matchesFormat) {
+                        material.style.display = 'block';
+                    } else {
+                        material.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Проверка пустого состояния
+            function checkEmptyState() {
+                const remainingMaterials = document.querySelectorAll('.material-card').length;
+                if (remainingMaterials === 0) {
+                    materialsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>Материалдар табылмады</h3>
+                            <p>Алғашқы материалды жүктеп көріңіз!</p>
+                            <button class="btn-upload" id="emptyStateUpload">
+                                <i class="fas fa-plus"></i> Материал жүктеу
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('emptyStateUpload').addEventListener('click', function() {
+                        uploadModal.classList.add('active');
+                    });
+                }
+            }
+            
+            // Обработчики событий
+            if (searchInput) searchInput.addEventListener('input', filterMaterials);
+            if (filterSubject) filterSubject.addEventListener('change', filterMaterials);
+            if (filterFormat) filterFormat.addEventListener('change', filterMaterials);
+            
+            // Обработка существующих материалов
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const materialCard = this.closest('.material-card');
+                    const folder = materialCard.getAttribute('data-folder');
+                    
+                    if (confirm('Материалды шынымен жойғыңыз келе ме?')) {
+                        if (folder) {
+                            const folderObj = folders.find(f => f.id === folder);
+                            if (folderObj && folderObj.count > 0) {
+                                folderObj.count--;
+                                updateFoldersDisplay();
+                            }
+                        }
+                        
+                        materialCard.style.opacity = '0.5';
+                        setTimeout(() => {
+                            materialCard.remove();
+                            checkEmptyState();
+                        }, 300);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.btn-download').forEach(button => {
+                button.addEventListener('click', function() {
+                    const materialCard = this.closest('.material-card');
+                    const title = materialCard.querySelector('.material-title').textContent;
+                    showNotification(`"${title}" файлы жүктелуде...`, 'success');
+                });
+            });
+            
+            // Фильтрация по папкам
+            document.querySelectorAll('.folder-card').forEach(folderCard => {
+                folderCard.addEventListener('click', function(e) {
+                    if (e.target.closest('.folder-btn')) return;
+                    
+                    const folderId = this.getAttribute('data-folder');
+                    const folder = folders.find(f => f.id === folderId);
+                    
+                    const materials = document.querySelectorAll('.material-card');
+                    materials.forEach(material => {
+                        const materialFolder = material.getAttribute('data-folder');
+                        if (materialFolder === folderId) {
+                            material.style.display = 'block';
+                        } else {
+                            material.style.display = 'none';
+                        }
+                    });
+                    
+                    showNotification(`"${folder.name}" папкасының материалдары көрсетілуде`, 'success');
+                });
+            });
+        }
+        
+        // Функция уведомлений
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            if (notification && notificationText) {
+                notificationText.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type);
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // Функция сброса настроек
+        function resetSettings() {
+            const lang = window.userState.get('language') || 'kk';
+            const texts = {
+                kk: {
+                    confirm: 'Барлық параметрлерді бастапқы қалпына келтіргіңіз келе ме?',
+                    success: 'Параметрлер қалпына келтірілді'
+                },
+                ru: {
+                    confirm: 'Сбросить все настройки к значениям по умолчанию?',
+                    success: 'Настройки сброшены'
+                },
+                en: {
+                    confirm: 'Reset all settings to default values?',
+                    success: 'Settings reset'
+                }
+            };
+            
+            if (confirm(texts[lang].confirm)) {
+                window.userState.resetToDefaults();
+                showNotification(texts[lang].success, 'success');
+            }
+        }
+    </script>
+</body>
+</html>

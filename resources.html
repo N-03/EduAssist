@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAssist | Материалдар</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  
+  <!-- Materialize CSS для красивых стилей -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  
+  <style>
+    body {
+      background: #f5f7fb;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .navbar {
+      background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+      padding: 0 20px;
+    }
+    
+    .brand-logo {
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+      color: #4a8af4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .container {
+      margin-top: 20px;
+    }
+    
+    .filter-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .resource-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      position: relative;
+    }
+    
+    .resource-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+      line-height: 1.4;
+    }
+    
+    .card-meta {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+    
+    .card-meta span {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    
+    .card-meta i {
+      font-size: 0.8rem;
+      margin-right: 5px;
+    }
+    
+    .card-format {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background: #f9f9f9;
+      border-top: 1px solid #eee;
+    }
+    
+    .favorite-btn {
+      color: #ff5252;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .favorite-btn:hover {
+      color: #ff1744;
+    }
+    
+    .favorite-btn.active {
+      color: #ff5252;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+    
+    .chip {
+      margin: 3px;
+      cursor: pointer;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4a8af4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+<div class="save-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button class="btn-save" onclick="window.userState.saveState()" title="Сохранить все настройки">
+        <i class="fas fa-save"></i>
+    </button>
+    <button class="btn-reset" onclick="resetSettings()" title="Сбросить настройки">
+        <i class="fas fa-undo"></i>
+    </button>
+</div>
+
+<style>
+.btn-save, .btn-reset {
+    background: #4a8af4;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.btn-reset {
+    background: #ff6b6b;
+}
+</style>
+
+<script>
+function resetSettings() {
+    if (confirm('Сбросить все настройки к значениям по умолчанию?')) {
+        localStorage.clear();
+        window.userState.state = {...window.userState.defaultState};
+        window.userState.saveState();
+        location.reload();
+    }
+}
+</script>
+  <!-- Навигация -->
+  <nav class="navbar">
+    <div class="nav-wrapper">
+      <a href="resources.html" class="brand-logo">EduAssist</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="dashboard.html">Басты бет</a></li>
+        <li><a href="profile.html">Жеке кабинет</a></li>
+        <li>
+          <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <span id="userName">Қолданушы</span>
+            <a href="#" onclick="logout()" class="btn-flat white-text">Шығу</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Основной контент -->
+  <div class="container">
+    <!-- Заголовок и поиск -->
+    <div class="row">
+      <div class="col s12">
+        <h4>Оқу материалдары</h4>
+        <p class="grey-text">Пән, сынып және формат бойынша сұрыптаңыз</p>
+      </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filter-card">
+      <div class="row">
+        <div class="input-field col s12 m3">
+          <select id="filterClass">
+            <option value="">Барлық сыныптар</option>
+            <option value="1">1 сынып</option>
+            <option value="2">2 сынып</option>
+            <option value="3">3 сынып</option>
+            <option value="4">4 сынып</option>
+            <option value="5">5 сынып</option>
+            <option value="6">6 сынып</option>
+            <option value="7">7 сынып</option>
+            <option value="8">8 сынып</option>
+            <option value="9">9 сынып</option>
+            <option value="10">10 сынып</option>
+            <option value="11">11 сынып</option>
+            <option value="12">12 сынып</option>
+          </select>
+          <label>Сынып</label>
+        </div>
+
+        <div class="input-field col s12 m3">
+          <select id="filterSubject">
+            <option value="">Барлық пәндер</option>
+            <option value="Математика">Математика</option>
+            <option value="Қазақ тілі">Қазақ тілі</option>
+            <option value="Орыс тілі">Орыс тілі</option>
+            <option value="Ағылшын тілі">Ағылшын тілі</option>
+            <option value="Физика">Физика</option>
+            <option value="Химия">Химия</option>
+            <option value="Биология">Биология</option>
+            <option value="Тарих">Тарих</option>
+            <option value="География">География</option>
+            <option value="Информатика">Информатика</option>
+          </select>
+          <label>Пән</label>
+        </div>
+
+        <div class="input-field col s12 m3">
+          <select id="filterFormat">
+            <option value="">Барлық форматтар</option>
+            <option value="pdf">PDF</option>
+            <option value="docx">DOCX</option>
+            <option value="pptx">PPTX</option>
+            <option value="jpg">JPG</option>
+            <option value="png">PNG</option>
+            <option value="mp4">MP4</option>
+            <option value="mp3">MP3</option>
+            <option value="zip">ZIP</option>
+          </select>
+          <label>Формат</label>
+        </div>
+
+        <div class="input-field col s12 m3">
+          <input type="text" id="searchInput" placeholder="Материал атауы бойынша іздеу...">
+          <label for="searchInput">Іздеу</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Материалы -->
+    <div id="resourcesContainer">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Материалдар жүктелуде...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для загрузки файла -->
+  <div id="uploadModal" class="modal">
+    <div class="modal-content">
+      <h4>Материал жүктеу</h4>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" id="uploadTitle" placeholder="Материал атауы">
+          <label for="uploadTitle">Атауы</label>
+        </div>
+        <div class="input-field col s12">
+          <textarea id="uploadDescription" class="materialize-textarea" placeholder="Материал сипаттамасы"></textarea>
+          <label for="uploadDescription">Сипаттама</label>
+        </div>
+        <div class="input-field col s6">
+          <select id="uploadClass">
+            <option value="" disabled selected>Сыныпты таңдаңыз</option>
+            <option value="1">1 сынып</option>
+            <option value="2">2 сынып</option>
+            <option value="3">3 сынып</option>
+            <option value="4">4 сынып</option>
+            <option value="5">5 сынып</option>
+            <option value="6">6 сынып</option>
+            <option value="7">7 сынып</option>
+            <option value="8">8 сынып</option>
+            <option value="9">9 сынып</option>
+            <option value="10">10 сынып</option>
+            <option value="11">11 сынып</option>
+            <option value="12">12 сынып</option>
+          </select>
+          <label>Сынып</label>
+        </div>
+        <div class="input-field col s6">
+          <select id="uploadSubject">
+            <option value="" disabled selected>Пәнді таңдаңыз</option>
+            <option value="Математика">Математика</option>
+            <option value="Қазақ тілі">Қазақ тілі</option>
+            <option value="Орыс тілі">Орыс тілі</option>
+            <option value="Ағылшын тілі">Ағылшын тілі</option>
+            <option value="Физика">Физика</option>
+            <option value="Химия">Химия</option>
+            <option value="Биология">Биология</option>
+            <option value="Тарих">Тарих</option>
+            <option value="География">География</option>
+            <option value="Информатика">Информатика</option>
+          </select>
+          <label>Пән</label>
+        </div>
+        <div class="file-field input-field col s12">
+          <div class="btn blue">
+            <span>Файл таңдау</span>
+            <input type="file" id="uploadFile">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="PDF, DOCX, PPTX, JPG, MP4">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Бас тарту</a>
+      <a href="#!" class="waves-effect waves-light btn blue" onclick="uploadResource()">Жүктеу</a>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large blue" onclick="openUploadModal()">
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    // Инициализация Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJrCYwCJHqvZtkm6ojuCNMvrmUeYXHP5A",
+      authDomain: "eduassist-eb506.firebaseapp.com",
+      projectId: "eduassist-eb506",
+      storageBucket: "eduassist-eb506.appspot.com",
+      messagingSenderId: "977276770732",
+      appId: "1:977276770732:web:89e61415aa457039894209"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    let currentUser = null;
+    let allResources = [];
+    let userFavorites = new Set();
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      // Инициализация Materialize компонентов
+      M.AutoInit();
+      
+      // Инициализация select элементов
+      const selects = document.querySelectorAll('select');
+      M.FormSelect.init(selects);
+      
+      // Инициализация модального окна
+      const modal = document.querySelectorAll('.modal');
+      M.Modal.init(modal);
+      
+      // Проверка авторизации
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          
+          // Отображение информации пользователя
+          document.getElementById('userName').textContent = user.displayName || user.email;
+          const firstLetter = (user.displayName || user.email).charAt(0).toUpperCase();
+          document.getElementById('userAvatar').textContent = firstLetter;
+          
+          // Загрузка избранного пользователя
+          await loadUserFavorites(user.uid);
+          
+          // Загрузка материалов
+          await loadResources();
+          
+          // Настройка фильтров
+          setupFilters();
+        } else {
+          window.location.href = 'index.html';
+        }
+      });
+    });
+
+    // Загрузка ресурсов из Firestore
+    async function loadResources() {
+      try {
+        const snapshot = await db.collection('resources')
+          .orderBy('createdAt', 'desc')
+          .get();
+        
+        allResources = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          data.id = doc.id;
+          allResources.push(data);
+        });
+        
+        renderResources(allResources);
+      } catch (error) {
+        console.error('Error loading resources:', error);
+        showMessage('Материалдарды жүктеу кезінде қате орын алды', 'error');
+      }
+    }
+
+    // Загрузка избранного пользователя
+    async function loadUserFavorites(userId) {
+      try {
+        const snapshot = await db.collection('users').doc(userId).collection('favorites').get();
+        userFavorites.clear();
+        snapshot.forEach(doc => {
+          userFavorites.add(doc.id);
+        });
+      } catch (error) {
+        console.error('Error loading favorites:', error);
+      }
+    }
+
+    // Отображение ресурсов
+    function renderResources(resources) {
+      const container = document.getElementById('resourcesContainer');
+      
+      if (resources.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="material-icons">folder_open</i>
+            <h5>Материалдар табылмады</h5>
+            <p>Бірінші материалды сіз жүктеп салыңыз!</p>
+            <button class="btn blue" onclick="openUploadModal()">
+              <i class="material-icons left">add</i>Материал жүктеу
+            </button>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '<div class="row">';
+      
+      resources.forEach(resource => {
+        const isFavorite = userFavorites.has(resource.id);
+        const fileSize = resource.fileSize ? ` • ${formatFileSize(resource.fileSize)}` : '';
+        
+        html += `
+          <div class="col s12 m6 l4">
+            <div class="resource-card">
+              <div class="card-content">
+                <span class="card-format">${resource.format?.toUpperCase() || 'ФАЙЛ'}</span>
+                <h6 class="card-title">${resource.title || 'Атаусыз материал'}</h6>
+                <div class="card-meta">
+                  <span><i class="material-icons tiny">school</i> ${resource.class || '-'} сынып</span>
+                  <span><i class="material-icons tiny">book</i> ${resource.subject || '-'}</span>
+                  <span><i class="material-icons tiny">insert_drive_file</i> ${resource.format || '-'}${fileSize}</span>
+                </div>
+                <p>${resource.description?.substring(0, 100) || 'Сипаттама жоқ'}...</p>
+                <p class="grey-text"><small>${resource.uploadedByName || 'Аноним'}, ${formatDate(resource.createdAt)}</small></p>
+              </div>
+              <div class="card-actions">
+                <a href="#" onclick="downloadResource('${resource.id}', '${resource.fileUrl}')" 
+                   class="btn-flat blue-text">
+                  <i class="material-icons left">cloud_download</i>Жүктеп алу
+                </a>
+                <a href="#" onclick="toggleFavorite('${resource.id}', '${resource.title}')" 
+                   class="favorite-btn ${isFavorite ? 'active' : ''}">
+                  <i class="material-icons">${isFavorite ? 'favorite' : 'favorite_border'}</i>
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Настройка фильтров
+    function setupFilters() {
+      const searchInput = document.getElementById('searchInput');
+      const filterClass = document.getElementById('filterClass');
+      const filterSubject = document.getElementById('filterSubject');
+      const filterFormat = document.getElementById('filterFormat');
+      
+      // События для фильтров
+      searchInput.addEventListener('input', applyFilters);
+      filterClass.addEventListener('change', applyFilters);
+      filterSubject.addEventListener('change', applyFilters);
+      filterFormat.addEventListener('change', applyFilters);
+    }
+
+    // Применение фильтров
+    function applyFilters() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const selectedClass = document.getElementById('filterClass').value;
+      const selectedSubject = document.getElementById('filterSubject').value;
+      const selectedFormat = document.getElementById('filterFormat').value;
+      
+      const filtered = allResources.filter(resource => {
+        // Поиск по названию и описанию
+        const searchMatch = !searchTerm || 
+          (resource.title && resource.title.toLowerCase().includes(searchTerm)) ||
+          (resource.description && resource.description.toLowerCase().includes(searchTerm));
+        
+        // Фильтр по классу
+        const classMatch = !selectedClass || resource.class == selectedClass;
+        
+        // Фильтр по предмету
+        const subjectMatch = !selectedSubject || resource.subject == selectedSubject;
+        
+        // Фильтр по формату
+        const formatMatch = !selectedFormat || resource.format == selectedFormat;
+        
+        return searchMatch && classMatch && subjectMatch && formatMatch;
+      });
+      
+      renderResources(filtered);
+    }
+
+    // Открытие модального окна для загрузки
+    function openUploadModal() {
+      const modal = M.Modal.getInstance(document.getElementById('uploadModal'));
+      modal.open();
+    }
+
+    // Загрузка ресурса - РЕШЕНИЕ ПРОБЛЕМЫ CORS
+    async function uploadResource() {
+      const title = document.getElementById('uploadTitle').value.trim();
+      const description = document.getElementById('uploadDescription').value.trim();
+      const classValue = document.getElementById('uploadClass').value;
+      const subject = document.getElementById('uploadSubject').value;
+      const fileInput = document.getElementById('uploadFile');
+      
+      if (!title || !classValue || !subject || !fileInput.files[0]) {
+        showMessage('Барлық қажетті өрістерді толтырыңыз!', 'error');
+        return;
+      }
+      
+      const file = fileInput.files[0];
+      const fileName = file.name;
+      const fileExtension = fileName.split('.').pop().toLowerCase();
+      
+      console.log('Selected file:', file.name, 'Size:', file.size, 'Type:', file.type);
+      
+      // Определяем формат
+      const formats = {
+        'pdf': 'pdf',
+        'docx': 'docx', 'doc': 'docx',
+        'pptx': 'pptx', 'ppt': 'pptx',
+        'jpg': 'jpg', 'jpeg': 'jpg',
+        'png': 'png',
+        'mp4': 'mp4',
+        'mp3': 'mp3',
+        'zip': 'zip'
+      };
+      
+      const format = formats[fileExtension] || fileExtension;
+      
+      try {
+        showMessage('Файл жүктелуде...', 'success');
+        
+        // 1. Создаем уникальное имя файла (без специальных символов)
+        const timestamp = Date.now();
+        const uniqueFileName = `${timestamp}_${fileName.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+        
+        // 2. Решение CORS: используем более простой путь без подпапок
+        const storageRef = storage.ref();
+        // Используем корневую папку чтобы избежать CORS проблем
+        const fileRef = storageRef.child(uniqueFileName);
+        
+        console.log('Uploading file to simple path:', fileRef.fullPath);
+        
+        // 3. Используем минимальные настройки для избежания CORS
+        const metadata = {
+          contentType: file.type,
+          customMetadata: {
+            originalName: fileName,
+            uploadedBy: currentUser.uid,
+            title: title,
+            class: classValue,
+            subject: subject
+          }
+        };
+        
+        // 4. Загружаем файл с минимальной конфигурацией
+        const uploadTask = fileRef.put(file, metadata);
+        
+        // Показываем прогресс
+        showMessage('Файл жүктелуде: 0%', 'success');
+        
+        // Следим за прогрессом загрузки
+        uploadTask.on('state_changed',
+          // Функция при изменении состояния
+          function(snapshot) {
+            // Прогресс загрузки
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload progress:', progress + '%');
+            showMessage(`Файл жүктелуде: ${Math.round(progress)}%`, 'success');
+          },
+          // Функция при ошибке
+          function(error) {
+            console.error('Upload error:', error);
+            
+            // Если CORS ошибка, предлагаем решение
+            if (error.code === 'storage/unauthorized' || 
+                error.message.includes('CORS') || 
+                error.message.includes('cors')) {
+              showMessage('CORS қатесі. Егер локальді сервер қолдансаңыз, қате жойылады. Серверді бастау үшін VS Code-та "Live Server" қосымшасын пайдаланыңыз.', 'error');
+            } else {
+              showMessage('Файлды жүктеу кезінде қате орын алды: ' + error.message, 'error');
+            }
+          },
+          // Функция при успешной загрузке
+          async function() {
+            try {
+              console.log('Upload complete');
+              
+              // 5. Получение URL файла
+              const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+              console.log('Download URL получен:', downloadURL);
+              
+              // 6. Сохранение информации в Firestore
+              const resourceData = {
+                title: title,
+                description: description,
+                class: classValue,
+                subject: subject,
+                format: format,
+                fileUrl: downloadURL,
+                filePath: fileRef.fullPath,
+                fileSize: file.size,
+                fileType: file.type,
+                uploadedBy: currentUser.uid,
+                uploadedByName: currentUser.displayName || currentUser.email.split('@')[0],
+                uploadedByEmail: currentUser.email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                views: 0,
+                downloads: 0
+              };
+              
+              console.log('Saving to Firestore:', resourceData);
+              
+              const docRef = await db.collection('resources').add(resourceData);
+              console.log('Document written with ID:', docRef.id);
+              
+              // 7. Закрытие модального окна и очистка формы
+              const modal = M.Modal.getInstance(document.getElementById('uploadModal'));
+              modal.close();
+              
+              // Очистка формы
+              document.getElementById('uploadTitle').value = '';
+              document.getElementById('uploadDescription').value = '';
+              document.getElementById('uploadClass').value = '';
+              document.getElementById('uploadSubject').value = '';
+              document.getElementById('uploadFile').value = '';
+              
+              // Обновляем селекты
+              M.FormSelect.init(document.querySelectorAll('select'));
+              M.updateTextFields();
+              
+              showMessage('Материал сәтті жүктелді!', 'success');
+              
+              // 8. Перезагрузка материалов
+              await loadResources();
+              
+            } catch (error) {
+              console.error('Error after upload:', error);
+              showMessage('Деректерді сақтау кезінде қате орын алды: ' + error.message, 'error');
+            }
+          }
+        );
+        
+      } catch (error) {
+        console.error('Upload process error:', error);
+        showMessage('Жүктеу кезінде қате орын алды: ' + error.message, 'error');
+      }
+    }
+
+    // АЛЬТЕРНАТИВА: Если все еще CORS проблема, используйте этот метод
+    async function uploadResourceAlternative() {
+      const title = document.getElementById('uploadTitle').value.trim();
+      const description = document.getElementById('uploadDescription').value.trim();
+      const classValue = document.getElementById('uploadClass').value;
+      const subject = document.getElementById('uploadSubject').value;
+      const fileInput = document.getElementById('uploadFile');
+      
+      if (!title || !classValue || !subject || !fileInput.files[0]) {
+        showMessage('Барлық қажетті өрістерді толтырыңыз!', 'error');
+        return;
+      }
+      
+      showMessage('Альтернативті әдіспен жүктелуде...', 'success');
+      
+      // Сохраняем только метаданные в Firestore (без файла)
+      const resourceData = {
+        title: title,
+        description: description,
+        class: classValue,
+        subject: subject,
+        format: fileInput.files[0].name.split('.').pop().toLowerCase(),
+        fileUrl: '#', // Временная заглушка
+        fileSize: fileInput.files[0].size,
+        uploadedBy: currentUser.uid,
+        uploadedByName: currentUser.displayName || currentUser.email.split('@')[0],
+        uploadedByEmail: currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        views: 0,
+        downloads: 0,
+        status: 'pending' // Файл будет загружен позже
+      };
+      
+      try {
+        const docRef = await db.collection('resources').add(resourceData);
+        
+        // Закрываем модальное окно
+        const modal = M.Modal.getInstance(document.getElementById('uploadModal'));
+        modal.close();
+        
+        showMessage('Материалдың метадеректері сақталды. Файлды кейінірек жүктей аласыз.', 'success');
+        
+        // Очищаем форму
+        document.getElementById('uploadTitle').value = '';
+        document.getElementById('uploadDescription').value = '';
+        document.getElementById('uploadClass').value = '';
+        document.getElementById('uploadSubject').value = '';
+        document.getElementById('uploadFile').value = '';
+        
+        // Обновляем список
+        await loadResources();
+        
+      } catch (error) {
+        console.error('Error saving metadata:', error);
+        showMessage('Метадеректерді сақтау кезінде қате: ' + error.message, 'error');
+      }
+    }
+
+    // Скачивание ресурса
+    async function downloadResource(resourceId, fileUrl) {
+      try {
+        // Увеличиваем счетчик скачиваний
+        await db.collection('resources').doc(resourceId).update({
+          downloads: firebase.firestore.FieldValue.increment(1)
+        });
+        
+        // Открываем файл в новой вкладке
+        window.open(fileUrl, '_blank');
+        
+      } catch (error) {
+        console.error('Error downloading resource:', error);
+        // Если не удалось обновить счетчик, все равно открываем файл
+        window.open(fileUrl, '_blank');
+      }
+    }
+
+    // Добавление/удаление из избранного
+    async function toggleFavorite(resourceId, resourceTitle) {
+      if (!currentUser) {
+        showMessage('Бұл функция үшін жүйеге кіру қажет!', 'error');
+        return;
+      }
+      
+      try {
+        const favoriteRef = db.collection('users').doc(currentUser.uid).collection('favorites').doc(resourceId);
+        
+        if (userFavorites.has(resourceId)) {
+          // Удаляем из избранного
+          await favoriteRef.delete();
+          userFavorites.delete(resourceId);
+          showMessage('Избранное-дан алынды', 'success');
+        } else {
+          // Добавляем в избранное
+          await favoriteRef.set({
+            resourceId: resourceId,
+            title: resourceTitle,
+            favoritedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          userFavorites.add(resourceId);
+          showMessage('Избранное-ға қосылды', 'success');
+        }
+        
+        // Обновляем отображение
+        applyFilters();
+        
+      } catch (error) {
+        console.error('Error toggling favorite:', error);
+        showMessage('Қате орын алды', 'error');
+      }
+    }
+
+    // Вспомогательные функции
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return '';
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString('kk-KZ', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function showMessage(text, type = 'info') {
+      M.toast({html: text, classes: type === 'error' ? 'red' : 'green'});
+    }
+
+    // Выход из системы
+    function logout() {
+      if (confirm('Шығуға сенімдісіз бе?')) {
+        auth.signOut().then(() => {
+          window.location.href = 'index.html';
+        });
+      }
+    }
+
+    // Проверка и настройка для локальной разработки
+    function setupLocalDevelopment() {
+      const url = window.location.href;
+      
+      // Если работаем локально (не через HTTPS)
+      if (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) {
+        console.log('Локальді дамыту режимі. CORS мәселелері болуы мүмкін.');
+        console.log('Ұсыныс: VS Code-та "Live Server" қосымшасын қолданыңыз.');
+        
+        // Показываем подсказку для разработчика
+        if (!localStorage.getItem('cors_warning_shown')) {
+          setTimeout(() => {
+            M.toast({
+              html: 'Ескерту: Локальді дамыту режимінде. Файл жүктеу үшін VS Code-та "Live Server" қолданыңыз.',
+              classes: 'orange',
+              displayLength: 10000
+            });
+            localStorage.setItem('cors_warning_shown', 'true');
+          }, 3000);
+        }
+      }
+    }
+
+    // Запускаем проверку при загрузке
+    setupLocalDevelopment();
+
+  </script>
+</body>
+</html>

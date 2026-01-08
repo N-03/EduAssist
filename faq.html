@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жиі қойылатын сұрақтар - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e4f1 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '❓';
+            position: absolute;
+            font-size: 12rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 30px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff7e5f;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #ff7e5f;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Категории FAQ */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff7e5f;
+            box-shadow: 0 20px 40px rgba(255, 126, 95, 0.15);
+        }
+
+        .category-card.active {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            color: white;
+        }
+
+        .category-card.active .category-icon,
+        .category-card.active .category-title,
+        .category-card.active .category-count {
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            color: #ff7e5f;
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Поиск */
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ff7e5f;
+            box-shadow: 0 5px 15px rgba(255, 126, 95, 0.1);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff7e5f;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background: #fe8c6a;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* FAQ список */
+        .faq-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: #ff7e5f;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .faq-item {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .faq-item.active {
+            border-color: #ff7e5f;
+            box-shadow: 0 5px 20px rgba(255, 126, 95, 0.1);
+        }
+
+        .faq-question {
+            padding: 25px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f0f4f8;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .question-icon {
+            color: #ff7e5f;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .question-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 25px;
+            max-height: 1000px;
+        }
+
+        .answer-content {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .answer-content ul,
+        .answer-content ol {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .answer-content li {
+            margin-bottom: 10px;
+        }
+
+        .answer-meta {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            color: #888;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Быстрые ссылки */
+        .quick-links {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .quick-link:hover {
+            background: #ff7e5f;
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .quick-link:hover .link-icon {
+            color: white;
+        }
+
+        .link-icon {
+            font-size: 1.5rem;
+            color: #ff7e5f;
+        }
+
+        .link-text {
+            font-weight: 600;
+        }
+
+        /* Контактная форма */
+        .contact-section {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 30px auto 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .contact-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .contact-button {
+            padding: 15px 30px;
+            background: white;
+            color: #ff7e5f;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Статистика */
+        .stats-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff7e5f;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Футер */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .faq-section,
+            .quick-links,
+            .contact-section,
+            .stats-section {
+                padding: 25px;
+            }
+            
+            .contact-form {
+                flex-direction: column;
+            }
+            
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-question-circle"></i> Жиі қойылатын сұрақтар</h1>
+            <p>Платформаны пайдалану кезінде туындайтын барлық сұрақтарға жауаптар</p>
+        </div>
+
+        <!-- Категории -->
+        <div class="categories">
+            <div class="category-card active" onclick="showCategory('general')">
+                <div class="category-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="category-title">Жалпы сұрақтар</div>
+                <div class="category-count">12 сұрақ</div>
+            </div>
+            
+            <div class="category-card" onclick="showCategory('account')">
+                <div class="category-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="category-title">Аккаунт және тіркеу</div>
+                <div class="category-count">8 сұрақ</div>
+            </div>
+            
+            <div class="category-card" onclick="showCategory('materials')">
+                <div class="category-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="category-title">Материалдармен жұмыс</div>
+                <div class="category-count">15 сұрақ</div>
+            </div>
+            
+            <div class="category-card" onclick="showCategory('technical')">
+                <div class="category-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="category-title">Техникалық сұрақтар</div>
+                <div class="category-count">10 сұрақ</div>
+            </div>
+        </div>
+
+        <!-- Поиск -->
+        <div class="search-box">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Сұрағыңызды жазыңыз немесе тақырып бойынша іздеңіз...">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- FAQ список -->
+        <div class="faq-section">
+            <h2 class="section-title">
+                <i class="fas fa-comments"></i> Жалпы сұрақтар
+            </h2>
+            
+            <div class="faq-list" id="faqList">
+                <!-- FAQ элементы будут добавляться динамически -->
+            </div>
+        </div>
+
+        <!-- Быстрые ссылки -->
+        <div class="quick-links">
+            <h2 class="section-title">
+                <i class="fas fa-external-link-alt"></i> Жылдам сілтемелер
+            </h2>
+            
+            <div class="links-grid">
+                <a href="guides.html" class="quick-link">
+                    <div class="link-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="link-text">Нұсқаулықтар</div>
+                </a>
+                
+                <a href="support.html" class="quick-link">
+                    <div class="link-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="link-text">Қолдау қызметі</div>
+                </a>
+                
+                <a href="contact.html" class="quick-link">
+                    <div class="link-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="link-text">Байланыс формасы</div>
+                </a>
+                
+                <a href="about.html" class="quick-link">
+                    <div class="link-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="link-text">Біз туралы</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+
+        <!-- Контактная форма -->
+        <div class="contact-section">
+            <h2>Жауабын таппадыңыз ба?</h2>
+            <p>Бізге жазыңыз, біз 24 сағат ішінде жауап береміз</p>
+            
+            <div class="contact-form">
+                <input type="text" class="contact-input" placeholder="Сіздің сұрағыңыз...">
+                <button class="contact-button">Жіберу</button>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <div class="footer-content">
+                <p>© 2025 EduAssist. Жиі қойылатын сұрақтар базасы.</p>
+                <div class="footer-links">
+                    <a href="guides.html" class="footer-link">Нұсқаулықтар</a>
+                    <a href="support.html" class="footer-link">Қолдау қызметі</a>
+                    <a href="contact.html" class="footer-link">Байланыс</a>
+                </div>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 20px;">
+                    FAQ базасы күнделікті жаңартылады. Соңғы жаңарту: 15.04.2025
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функция для возврата назад
+        window.goBack = function() {
+            if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                window.history.back();
+            } else {
+                // Если нет предыдущей страницы в истории или она с другого домена
+                window.location.href = 'index.html';
+            }
+        };
+
+        // Данные FAQ
+        const faqData = {
+            'general': [
+                {
+                    question: 'EduAssist деген не?',
+                    answer: 'EduAssist - білім беру процестерін жеңілдету және тиімді ету үшін арнайы әзірленген онлайн платформа. Бұл мұғалімдер мен оқушыларға оқу материалдарын табу, жүктеу, ортақ қолдану және статистиканы бақылау мүмкіндігін береді.',
+                    date: '15.04.2025',
+                    views: 1250
+                },
+                {
+                    question: 'Платформаны пайдалану тегін ме?',
+                    answer: 'Иә, EduAssist платформасы мүлдем тегін. Біз білімге қол жетімділікті арттыруға бағытталғанбыз. Болашақта кейбір кеңейтілген мүмкіндіктер үшін премиум жоспарлар болуы мүмкін, бірақ негізгі функционал әрқашан тегін болады.',
+                    date: '12.04.2025',
+                    views: 980
+                },
+                {
+                    question: 'Қандай құрылғыларда жұмыс істейді?',
+                    answer: 'EduAssist келесі құрылғыларда жұмыс істейді:<br><br><ul><li>Компьютерлер (Windows, macOS, Linux)</li><li>Ноутбуктер</li><li>Планшеттер (iOS, Android)</li><li>Смартфондар (iOS, Android)</li><li>Браузерлер (Chrome, Firefox, Safari, Edge)</li></ul><br>Сондай-ақ, мобильді қосымшалар да қолжетімді.',
+                    date: '10.04.2025',
+                    views: 850
+                },
+                {
+                    question: 'Қазақ тілінде қолдау бар ма?',
+                    answer: 'Иә, EduAssist платформасы толықтай қазақ тілінде қолдау көрсетеді. Интерфейс, нұсқаулықтар, қолдау қызметі және барлық материалдар қазақ тілінде қолжетімді. Сондай-ақ, орыс және ағылшын тілдерінде де қолдау бар.',
+                    date: '08.04.2025',
+                    views: 720
+                }
+            ],
+            'account': [
+                {
+                    question: 'Аккаунтты қалай тіркеуге болады?',
+                    answer: 'Аккаунтты тіркеу үшін:<br>1. Басты беттегі "Тіркелу" батырмасын басыңыз<br>2. Электрондық поштаңызды, құпиясөзді және атыңызды енгізіңіз<br>3. Электрондық поштаңызда растау хатын табыңыз<br>4. Растау сілтемесін басыңыз<br>5. Профильді толықтырыңыз<br><br>Тіркелу тегін және 5 минуттан аз уақыт алады.',
+                    date: '05.04.2025',
+                    views: 1560
+                },
+                {
+                    question: 'Құпиясөзді қалай қалпына келтіруге болады?',
+                    answer: 'Құпиясөзді қалпына келтіру үшін:<br>1. Кіру бетінде "Құпиясөзді ұмыттым" батырмасын басыңыз<br>2. Тіркелген электрондық поштаңызды енгізіңіз<br>3. Поштаңызда құпиясөзді қалпына келтіру сілтемесін алыңыз<br>4. Жаңа құпиясөзді енгізіңіз<br>5. Құпиясөзді растаңыз<br><br>Барлық процесс автоматты түрде жүреді.',
+                    date: '03.04.2025',
+                    views: 1120
+                }
+            ],
+            'materials': [
+                {
+                    question: 'Қандай файл форматтарын жүктеуге болады?',
+                    answer: 'Сіз келесі файл форматтарын жүктей аласыз:<br><br><strong>Құжаттар:</strong> PDF, DOC, DOCX, PPT, PPTX, TXT<br><strong>Суреттер:</strong> JPG, JPEG, PNG, GIF<br><strong>Бейнелер:</strong> MP4, AVI, MOV, WMV<br><strong>Аудио:</strong> MP3, WAV, M4A<br><br>Әр файлдың максималды өлшемі 50 MB.',
+                    date: '01.04.2025',
+                    views: 940
+                },
+                {
+                    question: 'Материалдарды қалай іздеуге болады?',
+                    answer: 'Материалдарды іздеудің бірнеше әдісі бар:<br>1. Негізгі іздеу жолағында атауы бойынша іздеу<br>2. Пән, сынып, формат бойынша сүзгілеу<br>3. Кеңейтілген іздеу параметрлерін қолдану<br>4. Тегтер бойынша іздеу<br>5. Автор бойынша іздеу<br><br>Іздеу жүйесі толық мәтінді іздеуді қолдайды.',
+                    date: '28.03.2025',
+                    views: 830
+                }
+            ],
+            'technical': [
+                {
+                    question: 'Егер сайт жұмыс істемесе, не істеу керек?',
+                    answer: 'Егер сайт жұмыс істемесе:<br>1. Интернет байланысыңызды тексеріңіз<br>2. Браузеріңізді жаңартыңыз<br>3. Кэш пен cookie файлдарын тазалаңыз<br>4. Басқа браузерді пайдаланып көріңіз<br>5. Уақытша VPN қосылымын өшіріңіз<br>6. Біздің қолдау қызметіне хабарласыңыз<br><br>Көп жағдайда проблема жергілікті болып шығады.',
+                    date: '25.03.2025',
+                    views: 670
+                },
+            ]
+        };
+
+        let currentCategory = 'general';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загрузка FAQ по умолчанию
+            loadFAQ(currentCategory);
+            
+            // Поиск FAQ
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                filterFAQ(searchTerm);
+            });
+            
+            // Кнопка поиска
+            document.querySelector('.search-button').addEventListener('click', function() {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    filterFAQ(searchTerm);
+                }
+            });
+            
+            // Поиск по Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.querySelector('.search-button').click();
+                }
+            });
+            
+            // Контактная форма
+            document.querySelector('.contact-button').addEventListener('click', function() {
+                const question = document.querySelector('.contact-input').value.trim();
+                if (question) {
+                    alert('Сұрағыңыз жіберілді! Біз сізге 24 сағат ішінде жауап береміз.');
+                    document.querySelector('.contact-input').value = '';
+                } else {
+                    alert('Сұрақты енгізіңіз!');
+                }
+            });
+        });
+        
+        function showCategory(category) {
+            // Обновляем активную категорию
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            const activeCard = document.querySelector(`.category-card[onclick*="${category}"]`);
+            if (activeCard) {
+                activeCard.classList.add('active');
+            }
+            
+            // Загружаем FAQ для категории
+            currentCategory = category;
+            loadFAQ(category);
+            
+            // Сбрасываем поиск
+            document.querySelector('.search-input').value = '';
+        }
+        
+        function loadFAQ(category) {
+            const faqList = document.getElementById('faqList');
+            const faqs = faqData[category] || [];
+            
+            // Обновляем заголовок
+            const sectionTitle = document.querySelector('.section-title');
+            const categoryNames = {
+                'general': 'Жалпы сұрақтар',
+                'account': 'Аккаунт және тіркеу',
+                'materials': 'Материалдармен жұмыс',
+                'technical': 'Техникалық сұрақтар'
+            };
+            
+            sectionTitle.innerHTML = `<i class="fas fa-comments"></i> ${categoryNames[category]}`;
+            
+            // Очищаем список
+            faqList.innerHTML = '';
+            
+            // Добавляем FAQ элементы
+            faqs.forEach((faq, index) => {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'faq-item';
+                faqItem.innerHTML = `
+                    <div class="faq-question" onclick="toggleFAQ(${index})">
+                        <div class="question-text">${faq.question}</div>
+                        <div class="question-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">${faq.answer}</div>
+                        <div class="answer-meta">
+                            <span>Жаңартылды: ${faq.date}</span>
+                            <span>Қаралды: ${faq.views.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+                faqList.appendChild(faqItem);
+                
+                // Анимация появления
+                setTimeout(() => {
+                    faqItem.style.opacity = '1';
+                    faqItem.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Показываем сообщение, если FAQ нет
+            if (faqs.length === 0) {
+                faqList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 10px;">Сұрақтар табылмады</h3>
+                        <p>Осы санат бойынша әлі сұрақтар қосылмаған.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function toggleFAQ(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const targetItem = faqItems[index];
+            
+            // Закрываем все остальные FAQ
+            faqItems.forEach((item, i) => {
+                if (i !== index && item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Переключаем текущий FAQ
+            targetItem.classList.toggle('active');
+            
+            // Обновляем иконку
+            const icon = targetItem.querySelector('.question-icon');
+            icon.textContent = targetItem.classList.contains('active') ? '×' : '+';
+        }
+        
+        function filterFAQ(searchTerm) {
+            const allFAQs = Object.values(faqData).flat();
+            const filteredFAQs = allFAQs.filter(faq => 
+                faq.question.toLowerCase().includes(searchTerm) || 
+                faq.answer.toLowerCase().includes(searchTerm)
+            );
+            
+            if (searchTerm === '') {
+                // Если поиск пустой, возвращаем текущую категорию
+                loadFAQ(currentCategory);
+                return;
+            }
+            
+            const faqList = document.getElementById('faqList');
+            const sectionTitle = document.querySelector('.section-title');
+            
+            // Обновляем заголовок
+            sectionTitle.innerHTML = `<i class="fas fa-search"></i> Іздеу нәтижелері: "${searchTerm}"`;
+            
+            if (filteredFAQs.length > 0) {
+                // Показываем найденные FAQ
+                faqList.innerHTML = '';
+                
+                filteredFAQs.forEach((faq, index) => {
+                    const faqItem = document.createElement('div');
+                    faqItem.className = 'faq-item';
+                    faqItem.innerHTML = `
+                        <div class="faq-question" onclick="toggleSearchFAQ(${index})">
+                            <div class="question-text">${faq.question}</div>
+                            <div class="question-icon">+</div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="answer-content">${faq.answer}</div>
+                            <div class="answer-meta">
+                                <span>Жаңартылды: ${faq.date}</span>
+                                <span>Қаралды: ${faq.views.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `;
+                    faqList.appendChild(faqItem);
+                    
+                    // Подсвечиваем найденные слова
+                    if (searchTerm.length > 2) {
+                        const questionText = faqItem.querySelector('.question-text');
+                        const answerContent = faqItem.querySelector('.answer-content');
+                        
+                        const highlightedQuestion = highlightText(questionText.textContent, searchTerm);
+                        const highlightedAnswer = highlightText(answerContent.textContent, searchTerm);
+                        
+                        questionText.innerHTML = highlightedQuestion;
+                        answerContent.innerHTML = highlightedAnswer;
+                    }
+                });
+                
+                // Функция для переключения в режиме поиска
+                window.toggleSearchFAQ = function(index) {
+                    const faqItems = document.querySelectorAll('.faq-item');
+                    const targetItem = faqItems[index];
+                    
+                    // Закрываем все остальные FAQ
+                    faqItems.forEach((item, i) => {
+                        if (i !== index && item.classList.contains('active')) {
+                            item.classList.remove('active');
+                        }
+                    });
+                    
+                    // Переключаем текущий FAQ
+                    targetItem.classList.toggle('active');
+                    
+                    // Обновляем иконку
+                    const icon = targetItem.querySelector('.question-icon');
+                    icon.textContent = targetItem.classList.contains('active') ? '×' : '+';
+                };
+            } else {
+                // Показываем сообщение, если ничего не найдено
+                faqList.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: #666;">
+                        <i class="fas fa-search" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 15px;">Нәтижелер табылмады</h3>
+                        <p>"${searchTerm}" бойынша ешқандай сұрақ табылмады.</p>
+                        <p style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                            Басқа сөздермен іздеп көріңіз немесе бізге сұрағыңызды жіберіңіз.
+                        </p>
+                    </div>
+                `;
+            }
+        }
+        
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
+    </script>
+</body>
+</html>

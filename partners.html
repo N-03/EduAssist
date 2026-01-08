@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Серіктестер - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 30px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #2196F3;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '🤝';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* Разделы */
+        .section {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: #2196F3;
+        }
+
+        /* Партнеры сетка */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .partner-card {
+            background: #f8f9fa;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-10px);
+            border-color: #2196F3;
+            box-shadow: 0 20px 40px rgba(33, 150, 243, 0.15);
+        }
+
+        .partner-logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 2.5rem;
+            color: #2196F3;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+
+        .partner-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .partner-type {
+            color: #2196F3;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 5px 15px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .partner-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .partner-benefits {
+            text-align: left;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .benefit-item i {
+            color: #4CAF50;
+        }
+
+        /* Преимущества партнерства */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .benefit-card {
+            background: #f8f9fa;
+            padding: 35px 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            background: #e3f2fd;
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            color: #2196F3;
+            margin-bottom: 20px;
+        }
+
+        .benefit-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .benefit-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Форма партнерства */
+        .partnership-form {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            background: white;
+            color: #2E7D32;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Статистика */
+        .stats-section {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Футер */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 30px;
+            }
+            
+            .partners-grid,
+            .benefits-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .partnership-form {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-handshake"></i> Серіктестер</h1>
+            <p>EduAssist - бұл білім беру саласындағы серіктестердің кең желісі. Біз бірлесе отырып жаңа технологиялар мен инновациялық шешімдерді жасаймыз</p>
+        </div>
+
+        <!-- Существующие партнеры -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i> Біздің серіктестер
+            </h2>
+            
+            <div class="partners-grid">
+                <div class="partner-card">
+                    <div class="partner-logo">KZ</div>
+                    <div class="partner-name">Қазақстан Республикасы Білім және Ғылым Министрлігі</div>
+                    <div class="partner-type">Мемлекеттік серіктес</div>
+                    <div class="partner-description">
+                        Мемлекеттік білім стандарттарын белгілеу және сапалық білім беруді қамтамасыз ету бойынша стратегиялық серіктес
+                    </div>
+                    <div class="partner-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Мемлекеттік стандарттарға сәйкестік</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Білім беру саясатын қалыптастыру</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Мектептерге интеграция</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="partner-card">
+                    <div class="partner-logo">ENU</div>
+                    <div class="partner-name"> Л.Н. Гумилев атындағы Еуразия ұлттық университеті </div>
+                    <div class="partner-type">Академиялық серіктес</div>
+                    <div class="partner-description">
+                        Заманауи білім беру әдістерін зерттеу және инновациялық оқыту технологияларын әзірлеу бойынша ынтымақтастық
+                    </div>
+                    <div class="partner-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Зерттеу және әзірлеу</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Академиялық бағдарламалар</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Студенттерге стажировка</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="partner-card">
+                    <div class="partner-logo">MS</div>
+                    <div class="partner-name">Microsoft Қазақстан</div>
+                    <div class="partner-type">Технологиялық серіктес</div>
+                    <div class="partner-description">
+                        Білім беруге арналған IT шешімдерін дамыту, бұлттық технологиялар және жасанды интеллект негізіндегі платформалар
+                    </div>
+                    <div class="partner-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Azure бұлттық инфрақұрылым</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>AI технологиялары</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Техникалық қолдау және оқыту</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Преимущества партнерства -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Серіктестік артықшылықтары
+            </h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="benefit-title">Нарыққа кеңінен қолжетімділік</div>
+                    <div class="benefit-text">
+                        Біздің платформа арқылы 1 000 000-нан астам оқушы және мұғалімдерге қол жеткізіңіз
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="benefit-title">Инновациялық технологиялар</div>
+                    <div class="benefit-text">
+                        Жасанды интеллект, VR/AR және басқа да заманауи технологияларға қол жеткізіңіз
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="benefit-title">Табыс табу мүмкіндігі</div>
+                    <div class="benefit-text">
+                        Біздің партнерлік бағдарлама арқылы қосымша кіріс табыңыз
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="benefit-title">Кәсіби даму</div>
+                    <div class="benefit-text">
+                        Оқытушыларға арналған тегін курстар және сертификаттау
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма партнерства -->
+        <div class="partnership-form">
+            <h2 class="form-title"><i class="fas fa-file-signature"></i> Серіктес болыңыз</h2>
+            
+            <form id="partnershipForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Ұйым атауы</label>
+                        <input type="text" class="form-input" placeholder="Ұйымыңыздың атауы" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Сайт</label>
+                        <input type="url" class="form-input" placeholder="https://example.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Сіздің атыңыз</label>
+                        <input type="text" class="form-input" placeholder="Атыңызды енгізіңіз" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Лауазымыңыз</label>
+                        <input type="text" class="form-input" placeholder="Лауазымыңыз" required>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Электрондық пошта</label>
+                        <input type="email" class="form-input" placeholder="email@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Телефон</label>
+                        <input type="tel" class="form-input" placeholder="+7 (777) 123-45-67" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Серіктестік түрі</label>
+                    <select class="form-select" required>
+                        <option value="">Таңдаңыз</option>
+                        <option value="educational">Білім беру ұйымы</option>
+                        <option value="technology">Технологиялық компания</option>
+                        <option value="publisher">Баспагер</option>
+                        <option value="corporate">Корпоративтік серіктес</option>
+                        <option value="other">Басқа</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ұсынысыңыз</label>
+                    <textarea class="form-textarea" placeholder="Ұйымыз туралы қысқаша және серіктестік ұсынысыңызды сипаттаңыз..." required></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit">
+                    <i class="fas fa-paper-plane"></i> Өтінім жіберу
+                </button>
+            </form>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <div class="footer-content">
+                <p>© 2025 EduAssist. Барлық серіктестік мүмкіндіктері.</p>
+                <div class="footer-links">
+                    <a href="index.html" class="footer-link">Басты бет</a>
+                    <a href="support.html" class="footer-link">Қолдау қызметі</a>
+                    <a href="careers.html" class="footer-link">Мансап</a>
+                    <a href="about.html" class="footer-link">Біз туралы</a>
+                </div>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 20px;">
+                    Серіктестік бойынша сұрақтар: naz_sivanbayeva@mail.ru
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функция для возврата назад
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Если нет истории, возвращаем на главную
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const partnershipForm = document.getElementById('partnershipForm');
+            
+            partnershipForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    company: this.querySelector('input[type="text"]').value,
+                    website: this.querySelector('input[type="url"]').value,
+                    name: this.querySelectorAll('input[type="text"]')[1].value,
+                    position: this.querySelectorAll('input[type="text"]')[2].value,
+                    email: this.querySelector('input[type="email"]').value,
+                    phone: this.querySelector('input[type="tel"]').value,
+                    type: this.querySelector('select').value,
+                    proposal: this.querySelector('textarea').value
+                };
+                
+                // Валидация
+                if (!formData.company || !formData.website || !formData.name || !formData.email || !formData.type || !formData.proposal) {
+                    alert('Барлық міндетті өрістерді толтырыңыз!');
+                    return;
+                }
+                
+                // Имитация отправки
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Жіберілуде...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    console.log('Partnership form submitted:', formData);
+                    
+                    // Показываем успешное сообщение
+                    const successModal = document.createElement('div');
+                    successModal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 1000;
+                    `;
+                    
+                    successModal.innerHTML = `
+                        <div style="background: white; padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; text-align: center;">
+                            <div style="font-size: 4rem; color: #4CAF50; margin-bottom: 20px;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h2 style="color: #333; margin-bottom: 15px;">Өтініміңіз қабылданды!</h2>
+                            <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">
+                                Біз сіздің серіктестік өтініміңізді сәтті қабылдадық. Өтінім нөмірі: <strong>#P${Math.floor(Math.random() * 10000)}</strong><br><br>
+                                Біздің серіктестік бөлімі 3 жұмыс күні ішінде сізбен байланысады.
+                            </p>
+                            <button onclick="closeModal()" style="padding: 12px 30px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                Түсінікті
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(successModal);
+                    
+                    // Восстанавливаем кнопку
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Очищаем форму
+                    partnershipForm.reset();
+                    
+                    window.closeModal = function() {
+                        document.body.removeChild(successModal);
+                    };
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

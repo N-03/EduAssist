@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хабарламалар - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(90deg, #1976d2, #1565c0);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💬';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Основной контент */
+        .messages-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            height: calc(100vh - 200px);
+        }
+
+        @media (max-width: 992px) {
+            .messages-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Список контактов */
+        .contacts-sidebar {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contacts-header {
+            padding: 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .contacts-header h2 {
+            color: #1976d2;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contacts-search {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .contacts-search input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .contacts-search i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            background: #f0f7ff;
+        }
+
+        .contact-item.active {
+            background: #e3f2fd;
+            border-left: 4px solid #1976d2;
+        }
+
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #bbdefb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: bold;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .contact-last-message {
+            font-size: 0.9rem;
+            color: #666;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .contact-meta {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .unread-badge {
+            background: #f44336;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            margin-left: auto;
+        }
+
+        /* Окно чата */
+        .chat-window {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 25px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #bbdefb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: bold;
+        }
+
+        .chat-user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .chat-user-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f5f5f5;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .chat-action-btn:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        /* История сообщений */
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #fafafa;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: #1976d2;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-text {
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .message.received .message-time {
+            color: #999;
+        }
+
+        .message.sent .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Поле ввода */
+        .chat-input-area {
+            padding: 25px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            resize: none;
+            max-height: 120px;
+            min-height: 50px;
+            font-family: inherit;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .send-button:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Вложения */
+        .attachments-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .attachment-item i {
+            color: #1976d2;
+        }
+
+        /* Пустое состояние */
+        .empty-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-chat i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 20px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-back a:hover {
+            background: #e3f2fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация назад -->
+        <div class="nav-back">
+            <a href="personal-cabinet.html">
+                <i class="fas fa-arrow-left"></i> Жеке кабинетке оралу
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-comments"></i> Хабарламалар</h1>
+            <p>Мұғалімдермен және қолдау қызметімен байланысыңыз</p>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="messages-layout">
+            <!-- Список контактов -->
+            <div class="contacts-sidebar">
+                <div class="contacts-header">
+                    <h2><i class="fas fa-users"></i> Контактілер</h2>
+                    <div class="contacts-search">
+                        <input type="text" placeholder="Контактілерді іздеу...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                
+                <div class="contacts-list" id="contactsList">
+                    <div class="contact-item active" data-contact="admin">
+                        <div class="contact-avatar">A</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Әділбаева Айгерім</div>
+                            <div class="contact-last-message">Жауабыңызға рахмет! Келесі сабақ қашан?</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div>12:30</div>
+                            <div class="unread-badge">3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" data-contact="teacher1">
+                        <div class="contact-avatar">М</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Мұхамеджанов Бахыт</div>
+                            <div class="contact-last-message">Жаңа материал жүктелді: Физика - Оптика</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div>09:45</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" data-contact="support">
+                        <div class="contact-avatar">Қ</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Қолдау қызметі</div>
+                            <div class="contact-last-message">Сіздің шағымдарыңыз қарастырылуда</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div>Вчера</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" data-contact="teacher2">
+                        <div class="contact-avatar">Г</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Гүлнара Оразбаева</div>
+                            <div class="contact-last-message">Сіздің жұмысыңыз өте жақсы!</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div>02.04</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" data-contact="teacher3">
+                        <div class="contact-avatar">Н</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Нұрғали Ерлан</div>
+                            <div class="contact-last-message">Есептерді қалай шешкеніңізді түсіндіріңіз</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div>01.04</div>
+                            <div class="unread-badge">1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Окно чата -->
+            <div class="chat-window">
+                <!-- Заголовок чата -->
+                <div class="chat-header">
+                    <div class="chat-user-info">
+                        <div class="chat-user-avatar">A</div>
+                        <div>
+                            <div class="chat-user-name">Әділбаева Айгерім</div>
+                            <div class="chat-user-role">Математика мұғалімі</div>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="chat-action-btn" title="Қоңырау">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="chat-action-btn" title="Бейнечаты">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="chat-action-btn" title="Ақпарат">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- История сообщений -->
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Сообщения загружаются динамически -->
+                </div>
+
+                <!-- Поле ввода -->
+                <div class="chat-input-area">
+                    <div class="chat-input-container">
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="Хабарламаңызды жазыңыз..." 
+                            rows="1"
+                        ></textarea>
+                        <button class="send-button" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactsList = document.getElementById('contactsList');
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            
+            // Данные чатов
+            const chats = {
+                admin: {
+                    name: "Әділбаева Айгерім",
+                    role: "Математика мұғалімі",
+                    avatar: "A",
+                    messages: [
+                        {
+                            text: "Сәлеметсіз бе! Математикадан туынды тақырыбы бойынша көмек керек пе?",
+                            time: "10:30",
+                            sender: "receiver"
+                        },
+                        {
+                            text: "Иә, көмек керек. Күрделі функцияның туындысын қалай табу керек?",
+                            time: "10:35",
+                            sender: "sender"
+                        },
+                        {
+                            text: "Күрделі функция үшін тізбекті ережені қолданамыз. Мысалы, f(g(x)) функциясының туындысы f'(g(x)) * g'(x) тең.",
+                            time: "10:40",
+                            sender: "receiver"
+                        },
+                        {
+                            text: "Мысалы, sin(x²) функциясының туындысы cos(x²) * 2x болады.",
+                            time: "10:42",
+                            sender: "receiver"
+                        },
+                        {
+                            text: "Түсіндім, рахмет! Енді мысалдарды өзім шеше аламын.",
+                            time: "12:25",
+                            sender: "sender"
+                        },
+                        {
+                            text: "Жақсы! Егер қосымша сұрақтарыңыз болса, қойыңыз.",
+                            time: "12:28",
+                            sender: "receiver"
+                        },
+                        {
+                            text: "Жауабыңызға рахмет! Келесі сабақ қашан?",
+                            time: "12:30",
+                            sender: "sender"
+                        }
+                    ]
+                },
+                teacher1: {
+                    name: "Мұхамеджанов Бахыт",
+                    role: "Физика мұғалімі",
+                    avatar: "М",
+                    messages: [
+                        {
+                            text: "Жаңа материал жүктелді: Физика - Оптика бөлімі. Толық ішінара шағылысу құбылысы туралы.",
+                            time: "09:45",
+                            sender: "receiver"
+                        }
+                    ]
+                },
+                support: {
+                    name: "Қолдау қызметі",
+                    role: "Техникалық қолдау",
+                    avatar: "Қ",
+                    messages: [
+                        {
+                            text: "Сәлеметсіз бе! Сіздің шағымдарыңыз қарастырылуда. Жауап 1-2 жұмыс күні ішінде беріледі.",
+                            time: "Вчера, 14:20",
+                            sender: "receiver"
+                        }
+                    ]
+                }
+            };
+            
+            let currentChat = 'admin';
+            
+            // Инициализация чата
+            loadChat(currentChat);
+            
+            // Обработка выбора контакта
+            contactsList.addEventListener('click', function(e) {
+                const contactItem = e.target.closest('.contact-item');
+                if (!contactItem) return;
+                
+                // Убираем активный класс у всех контактов
+                document.querySelectorAll('.contact-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Добавляем активный класс выбранному контакту
+                contactItem.classList.add('active');
+                
+                // Сбрасываем счетчик непрочитанных
+                const unreadBadge = contactItem.querySelector('.unread-badge');
+                if (unreadBadge) {
+                    unreadBadge.remove();
+                }
+                
+                // Загружаем чат
+                const contactId = contactItem.getAttribute('data-contact');
+                currentChat = contactId;
+                loadChat(contactId);
+            });
+            
+            // Загрузка чата
+            function loadChat(chatId) {
+                const chat = chats[chatId];
+                if (!chat) return;
+                
+                // Обновляем заголовок чата
+                document.querySelector('.chat-user-name').textContent = chat.name;
+                document.querySelector('.chat-user-role').textContent = chat.role;
+                document.querySelector('.chat-user-avatar').textContent = chat.avatar;
+                
+                // Очищаем сообщения
+                chatMessages.innerHTML = '';
+                
+                // Добавляем сообщения
+                chat.messages.forEach(msg => {
+                    addMessage(msg.text, msg.time, msg.sender);
+                });
+                
+                // Прокручиваем вниз
+                scrollToBottom();
+                
+                // Очищаем поле ввода
+                messageInput.value = '';
+                updateSendButton();
+            }
+            
+            // Добавление сообщения
+            function addMessage(text, time, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                messageDiv.innerHTML = `
+                    <div class="message-text">${text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                scrollToBottom();
+            }
+            
+            // Прокрутка вниз
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Автоматическое увеличение высоты текстового поля
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                updateSendButton();
+            });
+            
+            // Обновление состояния кнопки отправки
+            function updateSendButton() {
+                const message = messageInput.value.trim();
+                sendButton.disabled = message.length === 0;
+            }
+            
+            // Отправка сообщения
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message.length === 0) return;
+                
+                const now = new Date();
+                const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                             now.getMinutes().toString().padStart(2, '0');
+                
+                // Добавляем сообщение в чат
+                addMessage(message, time, 'sender');
+                
+                // Добавляем сообщение в данные чата
+                if (chats[currentChat]) {
+                    chats[currentChat].messages.push({
+                        text: message,
+                        time: time,
+                        sender: 'sender'
+                    });
+                }
+                
+                // Очищаем поле ввода
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                updateSendButton();
+                
+                // Имитация ответа (для демо)
+                if (currentChat === 'admin') {
+                    setTimeout(() => {
+                        const responses = [
+                            "Жақсы сұрақ! Оған жауап беремін.",
+                            "Түсіндім, бұл тақырыпты келесі сабақта қарастырамыз.",
+                            "Рахат! Келесі сұрағыңыз бар ма?",
+                            "Менің жауабым сізге көмектесті ме?"
+                        ];
+                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                        const responseTime = new Date();
+                        const responseTimeStr = responseTime.getHours().toString().padStart(2, '0') + ':' + 
+                                             responseTime.getMinutes().toString().padStart(2, '0');
+                        
+                        addMessage(randomResponse, responseTimeStr, 'receiver');
+                        
+                        // Обновляем последнее сообщение в списке контактов
+                        updateLastMessage(currentChat, message);
+                    }, 1000);
+                }
+            }
+            
+            // Обновление последнего сообщения в списке контактов
+            function updateLastMessage(chatId, message) {
+                const contactItem = document.querySelector(`[data-contact="${chatId}"]`);
+                if (contactItem) {
+                    const lastMessageEl = contactItem.querySelector('.contact-last-message');
+                    if (lastMessageEl) {
+                        lastMessageEl.textContent = message.length > 30 ? 
+                            message.substring(0, 30) + '...' : message;
+                    }
+                    
+                    // Обновляем время
+                    const now = new Date();
+                    const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                                  now.getMinutes().toString().padStart(2, '0');
+                    const timeEl = contactItem.querySelector('.contact-meta > div:first-child');
+                    if (timeEl) {
+                        timeEl.textContent = timeStr;
+                    }
+                }
+            }
+            
+            // Обработчики событий
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Поиск контактов
+            const searchInput = document.querySelector('.contacts-search input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const contacts = document.querySelectorAll('.contact-item');
+                
+                contacts.forEach(contact => {
+                    const name = contact.querySelector('.contact-name').textContent.toLowerCase();
+                    if (name.includes(searchTerm) || searchTerm === '') {
+                        contact.style.display = 'flex';
+                    } else {
+                        contact.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Инициализация
+            updateSendButton();
+            
+            // Загрузка остальных чатов при первом открытии
+            Object.keys(chats).forEach(chatId => {
+                if (chatId !== currentChat && !chats[chatId].messages) {
+                    chats[chatId].messages = [];
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Байланыс - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 70px 40px;
+            border-radius: 25px;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '📞';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 30px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 14px 25px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-8px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Основной контент */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 992px) {
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Контактная информация */
+        .contact-info {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .info-title {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-title i {
+            color: #667eea;
+        }
+
+        /* Контактные карточки */
+        .contact-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 28px;
+            background: #f8f9ff;
+            border-radius: 18px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .contact-card:hover {
+            transform: translateX(10px);
+            background: #eef1ff;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .card-detail {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .card-detail.phone {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Социальные сети */
+        .social-section {
+            margin-top: 40px;
+        }
+
+        .social-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .social-card {
+            background: #f8f9ff;
+            padding: 25px 20px;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .social-card:hover {
+            background: white;
+            border-color: #667eea;
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .social-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .social-card.telegram .social-icon {
+            color: #0088cc;
+        }
+
+        .social-card.whatsapp .social-icon {
+            color: #25D366;
+        }
+
+        .social-card.email .social-icon {
+            color: #764ba2;
+        }
+        .social-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Форма обратной связи */
+        .contact-form {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #764ba2, #667eea);
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-title i {
+            color: #764ba2;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid #e0e4ff;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23667eea' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 25px center;
+            background-size: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .file-upload {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .file-upload:hover {
+            background: #eef1ff;
+        }
+
+        .file-upload i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .form-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 45px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Часто задаваемые вопросы */
+        .faq-section {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+
+        .faq-title {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .faq-title i {
+            color: #667eea;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .faq-item {
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #e0e4ff;
+            transition: all 0.3s;
+        }
+
+        .faq-item.active {
+            border-color: #667eea;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.1);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            background: #f8f9ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #eef1ff;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .question-icon {
+            color: #667eea;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .question-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 30px;
+            max-height: 1000px;
+        }
+
+        .answer-content {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Карта */
+        .map-section {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+
+        .map-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .map-title i {
+            color: #667eea;
+        }
+
+        .map-container {
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .map-placeholder {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        /* Футер */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 25px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        .contact-hours {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .hours-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #e0e4ff;
+        }
+
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+
+        .hour-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .day {
+            font-weight: 600;
+            color: #e0e4ff;
+            margin-bottom: 5px;
+        }
+
+        .time {
+            font-size: 1.1rem;
+            color: #a0a8ff;
+        }
+
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            font-size: 1.5rem;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 50px 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .contact-info,
+            .contact-form,
+            .faq-section,
+            .map-section {
+                padding: 35px 25px;
+            }
+            
+            .contact-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px;
+            }
+            
+            .card-icon {
+                margin-bottom: 15px;
+            }
+            
+            .social-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hours-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-envelope-open-text"></i> Байланыс</h1>
+                <p>
+                    Бізбен қалай болса да байланысуға болады. Кез келген сұрақтарыңыз, 
+                    ұсыныстарыңыз немесе қолдау қажеттілігіңіз болса, біз сізге көмектесуге дайынбыз.
+                </p>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="contact-content">
+            <!-- Контактная информация -->
+            <div class="contact-info">
+                <h2 class="info-title">
+                    <i class="fas fa-address-card"></i> Байланыс ақпараты
+                </h2>
+                
+                <div class="contact-cards">
+                    <div class="contact-card" onclick="copyToClipboard('+77716597361')">
+                        <div class="card-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">Телефон</div>
+                            <div class="card-detail phone">+7 (771) 659-73-61</div>
+                            <div class="card-description">
+                                Дүйсенбіден жұмаға дейін 9:00-18:00 аралығында қоңырау шалуға болады
+                            </div>
+                            <button class="copy-btn">
+                                <i class="far fa-copy"></i> Нөмірді көшіру
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card" onclick="copyToClipboard('naz_sivanbayeva@mail.ru')">
+                        <div class="card-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">Электрондық пошта</div>
+                            <div class="card-detail">naz_sivanbayeva@mail.ru</div>
+                            <div class="card-description">
+                                Кез келген сұрақтарға жауап 24 сағат ішінде беріледі
+                            </div>
+                            <button class="copy-btn">
+                                <i class="far fa-copy"></i> Емайлды көшіру
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card" onclick="openTelegram()">
+                        <div class="card-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">Telegram</div>
+                            <div class="card-detail">@Naz_lym</div>
+                            <div class="card-description">
+                                Жылдам хабарламалар үшін Telegram арқылы жазыңыз
+                            </div>
+                            <button class="copy-btn" onclick="copyToClipboard('@Naz_lym')">
+                                <i class="far fa-copy"></i> Логинды көшіру
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Социальные сети -->
+                <div class="social-section">
+                    <h3 class="social-title">
+                        <i class="fas fa-share-alt"></i> Әлеуметтік желілер
+                    </h3>
+                    
+                    <div class="social-grid">
+                        <a href="https://t.me/Naz_lym" target="_blank" class="social-card telegram">
+                            <div class="social-icon">
+                                <i class="fab fa-telegram"></i>
+                            </div>
+                            <div class="social-name">Telegram</div>
+                        </a>
+                        
+                        <a href="https://wa.me/77716597361" target="_blank" class="social-card whatsapp">
+                            <div class="social-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="social-name">WhatsApp</div>
+                        </a>
+                        
+                        <a href="mailto:naz_sivanbayeva@mail.ru" class="social-card email">
+                            <div class="social-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="social-name">Email</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма обратной связи -->
+            <div class="contact-form">
+                <h2 class="form-title">
+                    <i class="fas fa-comment-dots"></i> Кері байланыс формасы
+                </h2>
+                
+                <form id="feedbackForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Атыңыз *</label>
+                            <input type="text" class="form-input" placeholder="Атыңызды енгізіңіз" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Электрондық пошта *</label>
+                            <input type="email" class="form-input" placeholder="email@example.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тақырып *</label>
+                        <select class="form-select" required>
+                            <option value="">Тақырыпты таңдаңыз</option>
+                            <option value="support">Техникалық қолдау</option>
+                            <option value="suggestion">Ұсыныс</option>
+                            <option value="partnership">Серіктестік</option>
+                            <option value="bug">Қате туралы хабарлау</option>
+                            <option value="other">Басқа</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Хабарлама *</label>
+                        <textarea class="form-textarea" placeholder="Хабарламаңызды толық сипаттаңыз..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Қосымша файлдар (міндетті емес)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Файлдарды осы жерге тартыңыз немесе басыңыз</p>
+                            <p style="font-size: 0.9rem; color: #999; margin-top: 10px;">PDF, JPG, PNG, DOC (max 10MB)</p>
+                        </div>
+                        <input type="file" id="fileInput" class="file-input" multiple>
+                    </div>
+                    
+                    <button type="submit" class="form-submit">
+                        <i class="fas fa-paper-plane"></i> Хабарламаны жіберу
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Часто задаваемые вопросы -->
+        <div class="faq-section">
+            <h2 class="faq-title">
+                <i class="fas fa-question-circle"></i> Жиі қойылатын сұрақтар
+            </h2>
+            
+            <div class="faq-list">
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <div class="question-text">Қандай уақытта қоңырау шалуға болады?</div>
+                        <div class="question-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            Бізбен дүйсенбіден жұмаға дейін 9:00-18:00 аралығында (Астана уақыты) байланысуға болады. 
+                            Сенбі және жексенбі күндері тек электрондық пошта және Telegram арқылы хабарласа аласыз.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <div class="question-text">Хабарламаға қанша уақытта жауап аламын?</div>
+                        <div class="question-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            Электрондық пошта арқылы жіберілген хабарламаларға 24 сағат ішінде жауап береміз. 
+                            Telegram арқылы жіберілген хабарламаларға 1-2 сағат ішінде жауап береміз.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <div class="question-text">Техникалық қолдауға қалай жүгінуге болады?</div>
+                        <div class="question-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            Техникалық қолдауға жүгіну үшін:<br>
+                            1. Бұл беттегі кері байланыс формасын толтырыңыз<br>
+                            2. Телефон арқылы бізбен байланысыңыз<br>
+                            3. Telegram арқылы хабарлама жіберіңіз<br>
+                            4. Электрондық пошта арқылы хабарлама жіберіңіз
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <div class="question-text">Серіктестік туралы қайдан білуге болады?</div>
+                        <div class="question-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            Серіктестік туралы мәлімет алу үшін электрондық поштаға хабарлама жіберіңіз немесе телефон арқылы байланысыңыз. 
+                            Біз сізге толық ақпарат береміз және барлық сұрақтарыңызға жауап береміз.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карта -->
+        <div class="map-section">
+            <h2 class="map-title">
+                <i class="fas fa-map-marker-alt"></i> Біздің орналасқан жеріміз
+            </h2>
+            
+            <div class="map-container">
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Астана, Қазақстан</h3>
+                    <p>Пушкин көшесі, 11</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>EduAssist</span>
+                </div>
+                
+                <p style="opacity: 0.9; max-width: 600px; margin: 0 auto; line-height: 1.6; font-size: 1.1rem;">
+                    Білім беру процестерін жеңілдетуге және тиімді етуге арналған инновациялық платформа. 
+                    Біз сіздің барлық сұрақтарыңызға жауап беруге дайынбыз.
+                </p>
+                
+                <div class="contact-hours">
+                    <h3 class="hours-title"><i class="fas fa-clock"></i> Жұмыс уақыты</h3>
+                    <div class="hours-grid">
+                        <div class="hour-item">
+                            <div class="day">Дүйсенбі - Жұма</div>
+                            <div class="time">09:00 - 18:00</div>
+                        </div>
+                        <div class="hour-item">
+                            <div class="day">Сенбі</div>
+                            <div class="time">10:00 - 16:00</div>
+                        </div>
+                        <div class="hour-item">
+                            <div class="day">Жексенбі</div>
+                            <div class="time">Техникалық қолдау 24/7</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="index.html" class="footer-link">Басты бет</a>
+                    <a href="about.html" class="footer-link">Біз туралы</a>
+                    <a href="support.html" class="footer-link">Қолдау қызметі</a>
+                    <a href="faq.html" class="footer-link">Жиі қойылатын сұрақтар</a>
+                </div>
+                
+                <p style="opacity: 0.7; font-size: 0.95rem; margin-top: 30px;">
+                    © 2025 EduAssist. Барлық құқықтар қорғалған.<br>
+                    Астана, Қазақстан | +7 (771) 659-73-61 | naz_sivanbayeva@mail.ru
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Мәтін сәтті көшірілді!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функция для возврата назад
+            window.goBack = function() {
+                if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                    window.history.back();
+                } else {
+                    // Если нет предыдущей страницы в истории или она с другого домена
+                    window.location.href = 'index.html';
+                }
+            };
+            
+            // Форма обратной связи
+            const feedbackForm = document.getElementById('feedbackForm');
+            const fileInput = document.getElementById('fileInput');
+            const fileUpload = document.querySelector('.file-upload');
+            
+            feedbackForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: this.querySelector('input[type="text"]').value,
+                    email: this.querySelector('input[type="email"]').value,
+                    subject: this.querySelector('select').value,
+                    message: this.querySelector('textarea').value
+                };
+                
+                // Валидация
+                if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+                    showNotification('Барлық міндетті өрістерді толтырыңыз!', 'error');
+                    return;
+                }
+                
+                // Имитация отправки
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Жіберілуде...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    // Здесь будет реальная отправка на сервер
+                    console.log('Form submitted:', formData);
+                    
+                    showNotification('Хабарламаңыз сәтті жіберілді! Біз сізге жауап береміз.');
+                    
+                    // Восстанавливаем кнопку
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Очищаем форму
+                    feedbackForm.reset();
+                    clearFileUpload();
+                    
+                }, 2000);
+            });
+            
+            // Обработка загрузки файлов
+            fileInput.addEventListener('change', function() {
+                const files = this.files;
+                if (files.length > 0) {
+                    let fileNames = [];
+                    let totalSize = 0;
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        fileNames.push(files[i].name);
+                        totalSize += files[i].size;
+                    }
+                    
+                    // Проверка размера (max 10MB)
+                    if (totalSize > 10 * 1024 * 1024) {
+                        showNotification('Файл өлшемі 10MB-тан аспауы керек!', 'error');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    fileUpload.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                        <p>${files.length} файл таңдалды (${(totalSize / (1024 * 1024)).toFixed(2)} MB)</p>
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">${fileNames.slice(0, 3).join(', ')}${fileNames.length > 3 ? '...' : ''}</p>
+                        <button onclick="clearFileUpload()" style="margin-top: 15px; padding: 8px 15px; background: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                            Тазарту
+                        </button>
+                    `;
+                }
+            });
+            
+            window.clearFileUpload = function() {
+                fileInput.value = '';
+                fileUpload.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Файлдарды осы жерге тартыңыз немесе басыңыз</p>
+                    <p style="font-size: 0.9rem; color: #999; margin-top: 10px;">PDF, JPG, PNG, DOC (max 10MB)</p>
+                `;
+            };
+            
+            // Копирование в буфер обмена
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Мәтін сәтті көшірілді: ' + text);
+                }).catch(err => {
+                    showNotification('Көшіру сәтсіз аяқталды', 'error');
+                    console.error('Copy error:', err);
+                });
+            };
+            
+            // Открытие Telegram
+            window.openTelegram = function() {
+                window.open('https://t.me/Naz_lym', '_blank');
+            };
+            
+            // Переключение FAQ
+            window.toggleFAQ = function(element) {
+                const allFAQ = document.querySelectorAll('.faq-item');
+                allFAQ.forEach(faq => {
+                    if (faq !== element && faq.classList.contains('active')) {
+                        faq.classList.remove('active');
+                        faq.querySelector('.question-icon').textContent = '+';
+                    }
+                });
+                
+                element.classList.toggle('active');
+                const icon = element.querySelector('.question-icon');
+                icon.textContent = element.classList.contains('active') ? '×' : '+';
+            };
+            
+            // Показать уведомление
+            window.showNotification = function(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                const notificationText = document.getElementById('notificationText');
+                
+                notificationText.textContent = message;
+                
+                // Меняем цвет в зависимости от типа
+                if (type === 'error') {
+                    notification.style.background = '#f44336';
+                } else if (type === 'warning') {
+                    notification.style.background = '#ff9800';
+                } else {
+                    notification.style.background = '#4CAF50';
+                }
+                
+                // Показываем уведомление
+                notification.classList.add('show');
+                
+                // Скрываем через 3 секунды
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            };
+            
+            // Клик по контактным карточкам
+            document.querySelectorAll('.contact-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.copy-btn')) {
+                        const detail = this.querySelector('.card-detail');
+                        if (detail) {
+                            const text = detail.textContent.trim();
+                            copyToClipboard(text);
+                        }
+                    }
+                });
+            });
+            
+            // Анимация появления элементов при скролле
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за всеми элементами с анимацией
+            document.querySelectorAll('.contact-card, .social-card, .faq-item, .hour-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(item);
+            });
+            
+            // Анимация для карточек контактов с задержкой
+            document.querySelectorAll('.contact-card').forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

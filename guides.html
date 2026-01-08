@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нұсқаулықтар - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '📖';
+            position: absolute;
+            font-size: 12rem;
+            opacity: 0.1;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 30px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #6a11cb;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #6a11cb;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Поиск */
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .search-box h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.1);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #6a11cb;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background: #2575fc;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Категории руководств */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: #6a11cb;
+            box-shadow: 0 15px 35px rgba(106, 17, 203, 0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            color: #6a11cb;
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Список руководств */
+        .guides-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: #6a11cb;
+        }
+
+        .guides-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .guide-item {
+            padding: 25px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border-left: 5px solid #6a11cb;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .guide-item:hover {
+            background: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .guide-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .guide-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .guide-meta {
+            display: flex;
+            gap: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .guide-difficulty {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .difficulty-beginner {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+        }
+
+        .difficulty-intermediate {
+            background: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+        }
+
+        .difficulty-advanced {
+            background: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+        }
+
+        /* Популярные руководства */
+        .popular-guides {
+            margin-bottom: 40px;
+        }
+
+        .popular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .popular-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .popular-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .popular-image {
+            height: 200px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .popular-content {
+            padding: 25px;
+        }
+
+        .popular-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .popular-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Пошаговые руководства */
+        .step-guides {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            counter-reset: step-counter;
+        }
+
+        .step-item {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 25px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .step-item::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .step-content h4 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Кнопка загрузки */
+        .download-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+
+        .download-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            color: #6a11cb;
+            padding: 18px 40px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Футер */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .guides-section,
+            .step-guides {
+                padding: 25px;
+            }
+            
+            .step-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-item::before {
+                position: static;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-book-open"></i> Нұсқаулықтар</h1>
+            <p>Платформаны тиімді пайдалану туралы толық нұсқаулықтар, кеңестер және пайдалы ақпараттар</p>
+        </div>
+
+        <!-- Поиск -->
+        <div class="search-box">
+            <h2>Нұсқаулықтарды іздеу</h2>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Нұсқаулық атауы, пән немесе тақырып бойынша іздеу...">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Категории -->
+        <div class="categories">
+            <div class="category-card" onclick="filterGuides('getting-started')">
+                <div class="category-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="category-title">Бастау</div>
+                <div class="category-count">12 нұсқаулық</div>
+            </div>
+            
+            <div class="category-card" onclick="filterGuides('materials')">
+                <div class="category-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="category-title">Материалдармен жұмыс</div>
+                <div class="category-count">8 нұсқаулық</div>
+            </div>
+            
+            <div class="category-card" onclick="filterGuides('profile')">
+                <div class="category-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="category-title">Профиль мен параметрлер</div>
+                <div class="category-count">6 нұсқаулық</div>
+            </div>
+            
+            <div class="category-card" onclick="filterGuides('advanced')">
+                <div class="category-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="category-title">Кеңейтілжен мүмкіндіктер</div>
+                <div class="category-count">10 нұсқаулық</div>
+            </div>
+        </div>
+
+        <!-- Основные руководства -->
+        <div class="guides-section">
+            <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i> Негізгі нұсқаулықтар
+            </h2>
+            
+            <div class="guides-list">
+                <div class="guide-item" onclick="openGuide('guide1')">
+                    <div class="guide-title">
+                        <span>Платформаға тіркелу және кіру</span>
+                        <span class="guide-difficulty difficulty-beginner">Бастауыш</span>
+                    </div>
+                    <div class="guide-description">
+                        ЕдуАссист платформасына қалай тіркелу керектігі, аккаунтты растау және кіру туралы толық нұсқаулық.
+                    </div>
+                    <div class="guide-meta">
+                        <span><i class="far fa-clock"></i> 10 минут</span>
+                        <span><i class="far fa-eye"></i> 1250 қаралым</span>
+                        <span><i class="far fa-calendar"></i> 15.03.2024 жаңартылды</span>
+                    </div>
+                </div>
+                
+                <div class="guide-item" onclick="openGuide('guide2')">
+                    <div class="guide-title">
+                        <span>Материалдарды іздеу және сүзгілеу</span>
+                        <span class="guide-difficulty difficulty-beginner">Бастауыш</span>
+                    </div>
+                    <div class="guide-description">
+                        Пән, сынып, формат және деңгей бойынша материалдарды қалай тиімді іздеу және сүзгілеу керектігі туралы нұсқаулық.
+                    </div>
+            
+                </div>
+                
+                <div class="guide-item" onclick="openGuide('guide3')">
+                    <div class="guide-title">
+                        <span>Өз материалдарыңызды жүктеу және басқару</span>
+                        <span class="guide-difficulty difficulty-intermediate">Орташа</span>
+                    </div>
+                    <div class="guide-description">
+                        PDF, DOC, PPT, бейне және аудио файлдарын қалай жүктеу, сипаттама қосу және өз материалдарыңызды басқару туралы нұсқаулық.
+                    </div>
+                    
+                </div>
+                
+                <div class="guide-item" onclick="openGuide('guide4')">
+                    <div class="guide-title">
+                        <span>Таңдаулыларды қолдану және папкаларды ұйымдастыру</span>
+                        <span class="guide-difficulty difficulty-intermediate">Орташа</span>
+                    </div>
+                    <div class="guide-description">
+                        Құнды материалдарды таңдаулыларға қосу, оларды папкаларға бөлу және ұйымдастыру туралы нұсқаулық.
+                    </div>
+                   
+                </div>
+                
+                <div class="guide-item" onclick="openGuide('guide5')">
+                    <div class="guide-title">
+                        <span>Статистика мен прогресті бақылау</span>
+                        <span class="guide-difficulty difficulty-advanced">Күрделі</span>
+                    </div>
+                    <div class="guide-description">
+                        Өз оқу прогрессіңізді қалай бақылау, статистиканы талдау және өсу графиктерін қарау туралы нұсқаулық.
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Популярные руководства -->
+        <div class="popular-guides">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i> Ең танымал нұсқаулықтар
+            </h2>
+            
+            <div class="popular-grid">
+                <div class="popular-card">
+                    <div class="popular-badge">#1 Танымал</div>
+                    <div class="popular-image">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="popular-content">
+                        <div class="popular-title">Іздеуді жеңілдету</div>
+                        <p>Жетілдірілген іздеу операторларын қолдану арқылы материалдарды табуды жеңілдету әдістері.</p>
+                        
+                    </div>
+                </div>
+                
+                <div class="popular-card">
+                    <div class="popular-badge">Көп қаралған</div>
+                    <div class="popular-image">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="popular-content">
+                        <div class="popular-title">Статистиканы талдау</div>
+                        <p>Оқу статистикасын дұрыс түсіну және оны оқу процесін жақсарту үшін қолдану әдістері.</p>
+                        
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+
+        <!-- Пошаговые инструкции -->
+        <div class="step-guides">
+            <h2 class="section-title">
+                <i class="fas fa-list-ol"></i> Қадамдық нұсқаулықтар
+            </h2>
+            
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Аккаунтты құру</h4>
+                        <p>Тіркеу формасын толтырыңыз, электрондық поштаны растаңыз және жеке кабинетіңізді баптаңыз.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Профильді толықтыру</h4>
+                        <p>Жеке мәліметтерді енгізіңіз, фотосурет қосыңыз, құпиясөзді орнатыңыз және хабарландыруларды баптаңыз.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Материалдармен жұмыс</h4>
+                        <p>Іздеу жүйесін пайдаланыңыз, материалдарды қараңыз, жүктеп алыңыз және өз материалдарыңызды жүктеңіз.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Өсу статистикасы</h4>
+                        <p>Статистика бетінде өз прогрессіңізді бақылаңыз, графиктерді талдаңыз және нәтижелерді жақсарту жоспарын жасаңыз.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <div class="footer-content">
+                <p>© 2025 EduAssist. Барлық нұсқаулықтар қорғалған.</p>
+                <div class="footer-links">
+                    <a href="faq.html" class="footer-link">Жиі қойылатын сұрақтар</a>
+                    <a href="support.html" class="footer-link">Қолдау қызметі</a>
+                    <a href="contact.html" class="footer-link">Байланыс</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Кері қайту функциясы
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Егер тарих болмаса, басты бетке бағыттаймыз
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Поиск руководств
+            const searchInput = document.querySelector('.search-input');
+            const guideItems = document.querySelectorAll('.guide-item');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                guideItems.forEach(item => {
+                    const title = item.querySelector('.guide-title span').textContent.toLowerCase();
+                    const description = item.querySelector('.guide-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm) || searchTerm === '') {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateX(0)';
+                        }, 100);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+            
+            // Кнопка поиска
+            document.querySelector('.search-button').addEventListener('click', function() {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    alert(`"${searchTerm}" бойынша іздеу жүргізілуде...`);
+                }
+            });
+            
+            // Поиск по Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.querySelector('.search-button').click();
+                }
+            });
+            
+            // Анимация появления элементов
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за всеми элементами с анимацией
+            document.querySelectorAll('.category-card, .guide-item, .popular-card, .step-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(item);
+            });
+        });
+        
+        function filterGuides(category) {
+            const categoryNames = {
+                'getting-started': 'Бастау',
+                'materials': 'Материалдармен жұмыс',
+                'profile': 'Профиль мен параметрлер',
+                'advanced': 'Кеңейтілген мүмкіндіктер'
+            };
+            
+            alert(`"${categoryNames[category]}" санаты бойынша сүзгілеу жүргізілуде...`);
+        }
+        
+        function openGuide(guideId) {
+            const guideTitles = {
+                'guide1': 'Платформаға тіркелу және кіру',
+                'guide2': 'Материалдарды іздеу және сүзгілеу',
+                'guide3': 'Өз материалдарыңызды жүктеу және басқару',
+                'guide4': 'Таңдаулыларды қолдану және папкаларды ұйымдастыру',
+                'guide5': 'Статистика мен прогресті бақылау'
+            };
+            
+            const modalHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                    <div style="background: white; padding: 40px; border-radius: 20px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <h2 style="color: #333;">${guideTitles[guideId]}</h2>
+                            <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666;">×</button>
+                        </div>
+                        
+                        <div style="color: #666; line-height: 1.8;">
+                            <p>Бұл нұсқаулық толық нұсқасына арналған демо көрініс. Нақты нұсқаулықта келесі бөлімдер болады:</p>
+                            
+                            <ul style="margin: 20px 0; padding-left: 20px;">
+                                <li>Толық сипаттама және мақсаттар</li>
+                                <li>Қадамдық нұсқаулық</li>
+                                <li>Суреттер мен мысалдар</li>
+                                <li>Кеңестер мен трюктар</li>
+                                <li>Жиі кездесетін қателер</li>
+                                <li>Жиі қойылатын сұрақтар</li>
+                                <li>Қосымша ресурстар</li>
+                            </ul>
+                            
+                            <p>Толық нұсқаулық жақында қолжетімді болады.</p>
+                        </div>
+                        
+                        <div style="margin-top: 30px; display: flex; gap: 15px;">
+                            <button onclick="closeModal()" style="padding: 12px 25px; background: #6a11cb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                Түсінікті
+                            </button>
+                            <button onclick="downloadPDF()" style="padding: 12px 25px; background: white; color: #6a11cb; border: 2px solid #6a11cb; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                PDF жүктеп алу
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            window.closeModal = function() {
+                document.body.removeChild(modal);
+            };
+            
+            window.downloadPDF = function() {
+                alert('PDF нұсқаулық жүктелуде...');
+                closeModal();
+            };
+        }
+    </script>
+</body>
+</html>

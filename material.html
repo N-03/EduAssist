@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менің материалдарым - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Фильтры и поиск */
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        @media (max-width: 992px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 45px 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            background: white;
+        }
+
+        .btn-upload {
+            background: #4CAF50;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-upload:hover {
+            background: #3d8b40;
+        }
+
+        /* Сетка материалов */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .material-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eaeaea;
+        }
+
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .material-header {
+            padding: 25px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .material-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .material-body {
+            padding: 25px;
+        }
+
+        .material-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #1976D2;
+        }
+
+        .btn-download {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #3d8b40;
+        }
+
+        .btn-delete {
+            background: #f8f9fa;
+            color: #d9534f;
+            border: 1px solid #ddd;
+        }
+
+        .btn-delete:hover {
+            background: #d9534f;
+            color: white;
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #555;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .page-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* Навигация */
+        .nav-back {
+            margin-bottom: 20px;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #e8f5e9;
+        }
+
+        /* Модальное окно для загрузки файла */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: #2E7D32;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #4CAF50;
+            border-radius: 12px;
+            padding: 50px 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: background 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #f0f9f1;
+        }
+
+        .upload-area i {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .upload-area small {
+            color: #999;
+            display: block;
+            margin-top: 10px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .remove-file {
+            color: #d9534f;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .modal-input, .modal-textarea, .modal-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .modal-input:focus, .modal-textarea:focus, .modal-select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .modal-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #3d8b40;
+        }
+
+        .modal-btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* Модальное окно для просмотра файла */
+        .viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .viewer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .viewer-container {
+            width: 95%;
+            height: 95%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .viewer-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .viewer-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .viewer-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .viewer-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .viewer-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .viewer-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-toolbar {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .viewer-control-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .viewer-control-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .page-info {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .viewer-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: white;
+        }
+
+        .image-viewer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .text-viewer {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: white;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #d9534f;
+        }
+
+        .notification.success {
+            background: #4CAF50;
+        }
+
+        .notification.info {
+            background: #2196F3;
+        }
+
+        /* Загрузчик */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .loader.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Навигация назад -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <h1><i class="fas fa-cloud-upload-alt"></i> Менің материалдарым</h1>
+            <p>Жүктелген материалдарды басқарыңыз және реттеңіз</p>
+        </div>
+
+        <!-- Фильтры и поиск -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" placeholder="Материалдарды іздеу...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <select class="filter-select">
+                <option value="">Барлық пәндер</option>
+                <option value="math">Математика</option>
+                <option value="physics">Физика</option>
+                <option value="kazakh">Қазақ тілі</option>
+                <option value="history">Тарих</option>
+            </select>
+            
+            <select class="filter-select">
+                <option value="">Барлық форматтар</option>
+                <option value="pdf">PDF</option>
+                <option value="doc">DOC</option>
+                <option value="ppt">PPT</option>
+                <option value="video">Бейне</option>
+                <option value="image">Сурет</option>
+                <option value="text">Мәтін</option>
+            </select>
+            
+            <button class="btn-upload" id="openUploadModal">
+                <i class="fas fa-plus"></i> Жаңа жүктеу
+            </button>
+        </div>
+
+        <!-- Сетка материалов -->
+        <div class="materials-grid" id="materialsGrid">
+            <!-- Демо материалы -->
+            <div class="material-card" data-id="1" data-type="pdf" data-url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
+                <div class="material-header">
+                    <div class="material-title">Математика - Туынды тақырыбы</div>
+                    <div class="material-meta">
+                        <span>PDF</span>
+                        <span>12.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Туынды ұғымы, оны есептеу әдістері және практикалық есептер
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-eye"></i> 320</span>
+                        <span><i class="fas fa-download"></i> 145</span>
+                        <span><i class="far fa-star"></i> 45</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-view" onclick="viewFile(1)">
+                            <i class="fas fa-eye"></i> Қарау
+                        </button>
+                        <button class="btn-action btn-download" onclick="downloadFile(1)">
+                            <i class="fas fa-download"></i> Жүктеу
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteFile(1)">
+                            <i class="fas fa-trash"></i> Жою
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="material-card" data-id="2" data-type="image" data-url="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800">
+                <div class="material-header">
+                    <div class="material-title">Физика - Заттың күйлері</div>
+                    <div class="material-meta">
+                        <span>JPG</span>
+                        <span>10.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Заттың қатты, сұйық және газ тәрізді күйлері, фазалық ауысулар
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-eye"></i> 210</span>
+                        <span><i class="fas fa-download"></i> 89</span>
+                        <span><i class="far fa-star"></i> 32</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-view" onclick="viewFile(2)">
+                            <i class="fas fa-eye"></i> Қарау
+                        </button>
+                        <button class="btn-action btn-download" onclick="downloadFile(2)">
+                            <i class="fas fa-download"></i> Жүктеу
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteFile(2)">
+                            <i class="fas fa-trash"></i> Жою
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="material-card" data-id="3" data-type="text" data-content="Абай Құнанбаев - қазақтың ұлы ақыны, ойшыл-ағартушысы. 1845 жылы 10 тамызда Семей облысының Шыңғыстау өңірінде туған. Ол қазақ әдебиетінің классигі, қазақ әдеби тілін қалыптастырушы, қазақтың жаңа әдебиеті мен мәдениетінің негізін қалаушылардың бірі. Абай өзінің өлеңдері, қара сөздері арқылы қазақ халқын білімге, ғылымға, прогреске шақырды. Оның 'Қара сөздері' қазақ философиясы мен этикасының бағалы мурасы болып табылады. Абай шығармашылығы қазақ мәдениетінің дамуына орасан зор ықпал етті және бүгінде де өз өзектілігін жойған жоқ.">
+                <div class="material-header">
+                    <div class="material-title">Қазақ әдебиеті - Абай шығармашылығы</div>
+                    <div class="material-meta">
+                        <span>TXT</span>
+                        <span>05.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Абай Құнанбаевтың өмірі мен шығармашылығы, әдебиетке қосқан үлесі
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-eye"></i> 280</span>
+                        <span><i class="fas fa-download"></i> 120</span>
+                        <span><i class="far fa-star"></i> 67</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-view" onclick="viewFile(3)">
+                            <i class="fas fa-eye"></i> Қарау
+                        </button>
+                        <button class="btn-action btn-download" onclick="downloadFile(3)">
+                            <i class="fas fa-download"></i> Жүктеу
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteFile(3)">
+                            <i class="fas fa-trash"></i> Жою
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="material-card" data-id="4" data-type="doc" data-url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
+                <div class="material-header">
+                    <div class="material-title">Химия - Органикалық қосылыстар</div>
+                    <div class="material-meta">
+                        <span>DOC</span>
+                        <span>01.04.2024</span>
+                    </div>
+                </div>
+                <div class="material-body">
+                    <p class="material-description">
+                        Органикалық химия негіздері, көмірсутектер, спирттер, карбон қышқылдары
+                    </p>
+                    <div class="material-stats">
+                        <span><i class="fas fa-eye"></i> 190</span>
+                        <span><i class="fas fa-download"></i> 95</span>
+                        <span><i class="far fa-star"></i> 28</span>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn-action btn-view" onclick="viewFile(4)">
+                            <i class="fas fa-eye"></i> Қарау
+                        </button>
+                        <button class="btn-action btn-download" onclick="downloadFile(4)">
+                            <i class="fas fa-download"></i> Жүктеу
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteFile(4)">
+                            <i class="fas fa-trash"></i> Жою
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пагинация -->
+        <div class="pagination">
+            <a href="#" class="page-btn"><i class="fas fa-chevron-left"></i></a>
+            <a href="#" class="page-btn active">1</a>
+            <a href="#" class="page-btn">2</a>
+            <a href="#" class="page-btn">3</a>
+            <a href="#" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Модальное окно для загрузки файла -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Материал жүктеу</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Файлды осы жерге тартыңыз немесе басыңыз</p>
+                    <small>PDF, DOC, PPT, JPG, PNG, TXT (максималды өлшемі: 50MB)</small>
+                    <input type="file" id="fileInput" multiple>
+                </div>
+                
+                <div class="file-info" id="fileInfo">
+                    <div class="file-name" id="fileName">Файл атауы</div>
+                    <div class="file-size" id="fileSize">0 MB</div>
+                    <button class="remove-file" id="removeFile">Файлды жою</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Материал атауы</label>
+                    <input type="text" class="modal-input" id="materialName" placeholder="Материал атауын енгізіңіз">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Пән</label>
+                    <select class="modal-select" id="materialSubject">
+                        <option value="">Пәнді таңдаңыз</option>
+                        <option value="math">Математика</option>
+                        <option value="physics">Физика</option>
+                        <option value="kazakh">Қазақ тілі</option>
+                        <option value="russian">Орыс тілі</option>
+                        <option value="history">Тарих</option>
+                        <option value="biology">Биология</option>
+                        <option value="chemistry">Химия</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Сынып</label>
+                    <select class="modal-select" id="materialGrade">
+                        <option value="">Сыныпты таңдаңыз</option>
+                        <option value="7">7 сынып</option>
+                        <option value="8">8 сынып</option>
+                        <option value="9">9 сынып</option>
+                        <option value="10">10 сынып</option>
+                        <option value="11">11 сынып</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Сипаттама</label>
+                    <textarea class="modal-textarea" id="materialDescription" placeholder="Материалдың қысқаша сипаттамасы..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="cancelUpload">
+                    <i class="fas fa-times"></i> Болдырмау
+                </button>
+                <button class="modal-btn modal-btn-primary" id="uploadFileBtn">
+                    <i class="fas fa-upload"></i> Жүктеу
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра файла -->
+    <div class="viewer-overlay" id="viewerModal">
+        <div class="viewer-container">
+            <div class="viewer-header">
+                <div class="viewer-title">
+                    <i class="fas fa-file-alt"></i>
+                    <span id="viewerTitle">Файл қарау</span>
+                </div>
+                <div class="viewer-actions">
+                    <button class="viewer-btn" id="viewerDownloadBtn">
+                        <i class="fas fa-download"></i> Жүктеу
+                    </button>
+                    <button class="viewer-btn" id="viewerPrintBtn">
+                        <i class="fas fa-print"></i> Баспаға шығару
+                    </button>
+                    <button class="viewer-close" id="closeViewer">&times;</button>
+                </div>
+            </div>
+            
+            <div class="viewer-content">
+                <div class="viewer-toolbar" id="viewerToolbar">
+                    <div class="viewer-controls" id="pdfControls" style="display: none;">
+                        <button class="viewer-control-btn" id="prevPage">
+                            <i class="fas fa-chevron-left"></i> Алдыңғы
+                        </button>
+                        <span class="page-info">
+                            Бет: <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                        </span>
+                        <button class="viewer-control-btn" id="nextPage">
+                            Келесі <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="viewer-control-btn" id="zoomIn">
+                            <i class="fas fa-search-plus"></i> Үлкейту
+                        </button>
+                        <button class="viewer-control-btn" id="zoomOut">
+                            <i class="fas fa-search-minus"></i> Кішірейту
+                        </button>
+                        <button class="viewer-control-btn" id="fitWidth">
+                            <i class="fas fa-arrows-alt-h"></i> Енге сәйкес
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="viewerContent">
+                    <!-- Контент будет загружен динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Материал сәтті жүктелді!</span>
+    </div>
+
+    <!-- Загрузчик -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text" id="loaderText">Файл жүктелуде...</div>
+        </div>
+    </div>
+
+    <!-- PDF.js для просмотра PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <script>
+        // Функция для возврата назад
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'profile.html';
+            }
+        }
+
+        // Глобальные переменные для просмотра PDF
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.0;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Имитация загрузки материалов
+        document.addEventListener('DOMContentLoaded', function() {
+            const materialsGrid = document.getElementById('materialsGrid');
+            const searchInput = document.querySelector('.search-box input');
+            const filterSubject = document.querySelectorAll('.filter-select')[0];
+            const filterFormat = document.querySelectorAll('.filter-select')[1];
+            
+            // Модальное окно элементы
+            const uploadModal = document.getElementById('uploadModal');
+            const openUploadModalBtn = document.getElementById('openUploadModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const cancelUploadBtn = document.getElementById('cancelUpload');
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const removeFileBtn = document.getElementById('removeFile');
+            const uploadFileBtn = document.getElementById('uploadFileBtn');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
+            
+            // Просмотрщик элементов
+            const viewerModal = document.getElementById('viewerModal');
+            const closeViewerBtn = document.getElementById('closeViewer');
+            const viewerTitle = document.getElementById('viewerTitle');
+            const viewerContent = document.getElementById('viewerContent');
+            const viewerDownloadBtn = document.getElementById('viewerDownloadBtn');
+            const viewerPrintBtn = document.getElementById('viewerPrintBtn');
+            const viewerToolbar = document.getElementById('viewerToolbar');
+            const pdfControls = document.getElementById('pdfControls');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const fitWidthBtn = document.getElementById('fitWidth');
+            const currentPageSpan = document.getElementById('currentPage');
+            const totalPagesSpan = document.getElementById('totalPages');
+            
+            let selectedFile = null;
+            let currentFileId = null;
+            
+            // Открытие модального окна
+            openUploadModalBtn.addEventListener('click', function() {
+                uploadModal.classList.add('active');
+                resetUploadForm();
+            });
+            
+            // Закрытие модального окна
+            function closeModal() {
+                uploadModal.classList.remove('active');
+                resetUploadForm();
+            }
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelUploadBtn.addEventListener('click', closeModal);
+            
+            // Закрытие по клику на фон
+            uploadModal.addEventListener('click', function(e) {
+                if (e.target === uploadModal) {
+                    closeModal();
+                }
+            });
+            
+            // Сброс формы загрузки
+            function resetUploadForm() {
+                selectedFile = null;
+                fileInfo.classList.remove('active');
+                document.getElementById('materialName').value = '';
+                document.getElementById('materialSubject').value = '';
+                document.getElementById('materialGrade').value = '';
+                document.getElementById('materialDescription').value = '';
+                fileInput.value = '';
+            }
+            
+            // Обработка drag and drop
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.background = '#f0f9f1';
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.background = '';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.background = '';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileSelect(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Обработка выбора файла
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+            
+            // Удаление выбранного файла
+            removeFileBtn.addEventListener('click', function() {
+                selectedFile = null;
+                fileInfo.classList.remove('active');
+                fileInput.value = '';
+            });
+            
+            // Обработка выбора файла
+            function handleFileSelect(file) {
+                // Проверка размера файла (макс 50MB)
+                if (file.size > 50 * 1024 * 1024) {
+                    showNotification('Файл өлшемі 50MB-тан аспауы керек', 'error');
+                    return;
+                }
+                
+                // Проверка типа файла
+                const validTypes = [
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-powerpoint',
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'text/plain'
+                ];
+                
+                if (!validTypes.includes(file.type)) {
+                    showNotification('Қолдау көрсетілмейтін файл форматы', 'error');
+                    return;
+                }
+                
+                selectedFile = file;
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.classList.add('active');
+                
+                // Автоматически заполняем название материала
+                const materialName = document.getElementById('materialName');
+                if (!materialName.value) {
+                    materialName.value = file.name.replace(/\.[^/.]+$/, ""); // Убираем расширение
+                }
+            }
+            
+            // Форматирование размера файла
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Загрузка файла
+            uploadFileBtn.addEventListener('click', function() {
+                if (!selectedFile) {
+                    showNotification('Файл таңдаңыз', 'error');
+                    return;
+                }
+                
+                const materialName = document.getElementById('materialName').value.trim();
+                const materialSubject = document.getElementById('materialSubject').value;
+                const materialGrade = document.getElementById('materialGrade').value;
+                const materialDescription = document.getElementById('materialDescription').value.trim();
+                
+                if (!materialName) {
+                    showNotification('Материал атауын енгізіңіз', 'error');
+                    return;
+                }
+                
+                if (!materialSubject) {
+                    showNotification('Пәнді таңдаңыз', 'error');
+                    return;
+                }
+                
+                if (!materialGrade) {
+                    showNotification('Сыныпты таңдаңыз', 'error');
+                    return;
+                }
+                
+                // Имитация загрузки файла
+                showLoader('Файл жүктелуде...');
+                uploadFileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Жүктелуде...';
+                uploadFileBtn.disabled = true;
+                
+                // В реальном приложении здесь будет отправка файла на сервер
+                setTimeout(() => {
+                    // Создаем новый материал
+                    const newMaterial = createMaterialCard({
+                        id: Date.now(),
+                        title: materialName,
+                        subject: materialSubject,
+                        grade: materialGrade,
+                        description: materialDescription,
+                        fileType: getFileType(selectedFile.type),
+                        fileName: selectedFile.name,
+                        file: selectedFile
+                    });
+                    
+                    // Добавляем в начало сетки
+                    materialsGrid.insertBefore(newMaterial, materialsGrid.firstChild);
+                    
+                    // Показываем уведомление
+                    showNotification('Материал сәтті жүктелді!', 'success');
+                    
+                    // Закрываем модальное окно
+                    closeModal();
+                    
+                    // Восстанавливаем кнопку
+                    uploadFileBtn.innerHTML = '<i class="fas fa-upload"></i> Жүктеу';
+                    uploadFileBtn.disabled = false;
+                    
+                    hideLoader();
+                    
+                }, 2000);
+            });
+            
+            // Определение типа файла
+            function getFileType(mimeType) {
+                const typeMap = {
+                    'application/pdf': 'PDF',
+                    'application/msword': 'DOC',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+                    'application/vnd.ms-powerpoint': 'PPT',
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PPT',
+                    'image/jpeg': 'JPG',
+                    'image/png': 'PNG',
+                    'image/gif': 'GIF',
+                    'text/plain': 'TXT'
+                };
+                
+                return typeMap[mimeType] || 'Файл';
+            }
+            
+            // Создание карточки материала
+            function createMaterialCard(data) {
+                const materialCard = document.createElement('div');
+                materialCard.className = 'material-card';
+                materialCard.setAttribute('data-id', data.id);
+                materialCard.setAttribute('data-type', data.fileType.toLowerCase());
+                
+                if (data.file) {
+                    // Создаем URL для файла
+                    const fileUrl = URL.createObjectURL(data.file);
+                    materialCard.setAttribute('data-url', fileUrl);
+                    materialCard.setAttribute('data-filename', data.file.name);
+                }
+                
+                materialCard.innerHTML = `
+                    <div class="material-header">
+                        <div class="material-title">${data.title}</div>
+                        <div class="material-meta">
+                            <span>${data.fileType}</span>
+                            <span>${new Date().toLocaleDateString('kk-KZ')}</span>
+                        </div>
+                    </div>
+                    <div class="material-body">
+                        <p class="material-description">
+                            ${data.description || 'Сипаттама жоқ'}
+                        </p>
+                        <div class="material-stats">
+                            <span><i class="fas fa-eye"></i> 1</span>
+                            <span><i class="fas fa-download"></i> 0</span>
+                            <span><i class="far fa-star"></i> 0</span>
+                        </div>
+                        <div class="material-actions">
+                            <button class="btn-action btn-view" onclick="viewFile(${data.id})">
+                                <i class="fas fa-eye"></i> Қарау
+                            </button>
+                            <button class="btn-action btn-download" onclick="downloadFile(${data.id})">
+                                <i class="fas fa-download"></i> Жүктеу
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteFile(${data.id})">
+                                <i class="fas fa-trash"></i> Жою
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return materialCard;
+            }
+            
+            // Функция просмотра файла
+            window.viewFile = function(id) {
+                const materialCard = document.querySelector(`.material-card[data-id="${id}"]`);
+                if (!materialCard) return;
+                
+                const title = materialCard.querySelector('.material-title').textContent;
+                const fileType = materialCard.getAttribute('data-type');
+                const fileUrl = materialCard.getAttribute('data-url');
+                const content = materialCard.getAttribute('data-content');
+                
+                currentFileId = id;
+                viewerTitle.textContent = title;
+                
+                // Увеличиваем счетчик просмотров
+                const viewCount = materialCard.querySelector('.material-stats span:first-child');
+                const currentViews = parseInt(viewCount.textContent.match(/\d+/)[0]) || 0;
+                viewCount.innerHTML = `<i class="fas fa-eye"></i> ${currentViews + 1}`;
+                
+                // Очищаем контент
+                viewerContent.innerHTML = '';
+                pdfControls.style.display = 'none';
+                
+                // В зависимости от типа файла показываем соответствующий контент
+                if (fileType === 'pdf') {
+                    showLoader('PDF жүктелуде...');
+                    loadPDF(fileUrl);
+                } else if (fileType === 'image' || fileType === 'jpg' || fileType === 'png' || fileType === 'gif') {
+                    showImage(fileUrl);
+                } else if (fileType === 'text' || fileType === 'txt') {
+                    showText(content || 'Мәтін қолжетімді емес');
+                } else {
+                    // Для других типов используем iframe
+                    showIframe(fileUrl);
+                }
+                
+                viewerModal.classList.add('active');
+            };
+            
+            // Функция загрузки PDF
+            async function loadPDF(url) {
+                try {
+                    // Загружаем PDF с помощью pdf.js
+                    const loadingTask = pdfjsLib.getDocument(url);
+                    pdfDoc = await loadingTask.promise;
+                    
+                    // Скрываем загрузчик
+                    hideLoader();
+                    
+                    // Показываем панель управления PDF
+                    pdfControls.style.display = 'flex';
+                    
+                    // Устанавливаем общее количество страниц
+                    totalPagesSpan.textContent = pdfDoc.numPages;
+                    currentPage = 1;
+                    currentPageSpan.textContent = currentPage;
+                    
+                    // Рендерим первую страницу
+                    renderPage(currentPage);
+                    
+                } catch (error) {
+                    console.error('PDF жүктеу қатесі:', error);
+                    hideLoader();
+                    viewerContent.innerHTML = `
+                        <div style="text-align: center; padding: 50px; color: #666;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                            <h3>PDF жүктеу мүмкін болмады</h3>
+                            <p>Файлды жүктеп алып қараңыз</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Рендеринг страницы PDF
+            async function renderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                    return;
+                }
+                
+                pageRendering = true;
+                
+                try {
+                    const page = await pdfDoc.getPage(num);
+                    const viewport = page.getViewport({ scale: scale });
+                    
+                    // Настраиваем canvas
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    // Рендерим страницу
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    
+                    await page.render(renderContext).promise;
+                    
+                    // Очищаем контент и добавляем canvas
+                    viewerContent.innerHTML = '';
+                    viewerContent.appendChild(canvas);
+                    
+                    // Обновляем номер страницы
+                    currentPageSpan.textContent = num;
+                    
+                    pageRendering = false;
+                    
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                    
+                } catch (error) {
+                    console.error('PDF бетін рендеринг қатесі:', error);
+                    pageRendering = false;
+                }
+            }
+            
+            // Показать изображение
+            function showImage(url) {
+                viewerContent.innerHTML = `
+                    <div class="image-viewer">
+                        <img src="${url}" alt="Сурет">
+                    </div>
+                `;
+            }
+            
+            // Показать текст
+            function showText(text) {
+                viewerContent.innerHTML = `
+                    <div class="text-viewer">
+                        ${text.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
+                    </div>
+                `;
+            }
+            
+            // Показать iframe (для других форматов)
+            function showIframe(url) {
+                viewerContent.innerHTML = `
+                    <iframe class="viewer-iframe" src="${url}" frameborder="0"></iframe>
+                `;
+            }
+            
+            // Обработчики для управления PDF
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                }
+            });
+            
+            zoomInBtn.addEventListener('click', function() {
+                scale += 0.1;
+                renderPage(currentPage);
+            });
+            
+            zoomOutBtn.addEventListener('click', function() {
+                if (scale > 0.1) {
+                    scale -= 0.1;
+                    renderPage(currentPage);
+                }
+            });
+            
+            fitWidthBtn.addEventListener('click', function() {
+                // В реальном приложении здесь будет логика подгонки по ширине
+                scale = 1.0;
+                renderPage(currentPage);
+            });
+            
+            // Функция скачивания файла
+            window.downloadFile = function(id) {
+                const materialCard = document.querySelector(`.material-card[data-id="${id}"]`);
+                if (!materialCard) return;
+                
+                const title = materialCard.querySelector('.material-title').textContent;
+                const fileUrl = materialCard.getAttribute('data-url');
+                const fileName = materialCard.getAttribute('data-filename') || `${title}.${materialCard.getAttribute('data-type')}`;
+                
+                // Увеличиваем счетчик скачиваний
+                const downloadCount = materialCard.querySelector('.material-stats span:nth-child(2)');
+                const currentDownloads = parseInt(downloadCount.textContent.match(/\d+/)[0]) || 0;
+                downloadCount.innerHTML = `<i class="fas fa-download"></i> ${currentDownloads + 1}`;
+                
+                // Создаем временную ссылку для скачивания
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification(`"${title}" жүктелуде...`, 'info');
+            };
+            
+            // Функция удаления файла
+            window.deleteFile = function(id) {
+                const materialCard = document.querySelector(`.material-card[data-id="${id}"]`);
+                if (!materialCard) return;
+                
+                const title = materialCard.querySelector('.material-title').textContent;
+                
+                if (confirm(`"${title}" материалды шынымен жойғыңыз келе ме?`)) {
+                    materialCard.style.opacity = '0.5';
+                    setTimeout(() => {
+                        materialCard.remove();
+                        
+                        // Проверяем, есть ли еще материалы
+                        const remainingMaterials = document.querySelectorAll('.material-card').length;
+                        if (remainingMaterials === 0) {
+                            materialsGrid.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-box-open"></i>
+                                    <h3>Материалдар табылмады</h3>
+                                    <p>Алғашқы материалды жүктеп көріңіз!</p>
+                                    <button class="btn-upload" id="emptyStateUpload">
+                                        <i class="fas fa-plus"></i> Материал жүктеу
+                                    </button>
+                                </div>
+                            `;
+                            
+                            // Добавляем обработчик для кнопки в пустом состоянии
+                            document.getElementById('emptyStateUpload').addEventListener('click', function() {
+                                uploadModal.classList.add('active');
+                            });
+                        }
+                    }, 300);
+                    
+                    showNotification('Материал жойылды', 'success');
+                }
+            };
+            
+            // Закрытие просмотрщика
+            closeViewerBtn.addEventListener('click', function() {
+                viewerModal.classList.remove('active');
+                // Очищаем PDF документ
+                pdfDoc = null;
+            });
+            
+            viewerModal.addEventListener('click', function(e) {
+                if (e.target === viewerModal) {
+                    viewerModal.classList.remove('active');
+                    pdfDoc = null;
+                }
+            });
+            
+            // Скачивание из просмотрщика
+            viewerDownloadBtn.addEventListener('click', function() {
+                if (currentFileId) {
+                    downloadFile(currentFileId);
+                }
+            });
+            
+            // Печать из просмотрщика
+            viewerPrintBtn.addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Показать загрузчик
+            function showLoader(text) {
+                loaderText.textContent = text;
+                loader.classList.add('active');
+            }
+            
+            // Скрыть загрузчик
+            function hideLoader() {
+                loader.classList.remove('active');
+            }
+            
+            // Показать уведомление
+            function showNotification(message, type = 'success') {
+                notificationText.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type);
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Функция фильтрации материалов
+            function filterMaterials() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedSubject = filterSubject.value;
+                const selectedFormat = filterFormat.value;
+                
+                const materials = document.querySelectorAll('.material-card');
+                
+                materials.forEach(material => {
+                    const title = material.querySelector('.material-title').textContent.toLowerCase();
+                    const subject = material.querySelector('.material-meta span:first-child').textContent.toLowerCase();
+                    const format = material.getAttribute('data-type').toLowerCase();
+                    
+                    const matchesSearch = title.includes(searchTerm) || searchTerm === '';
+                    const matchesSubject = selectedSubject === '' || title.includes(selectedSubject) || subject.includes(selectedSubject);
+                    const matchesFormat = selectedFormat === '' || format.includes(selectedFormat);
+                    
+                    if (matchesSearch && matchesSubject && matchesFormat) {
+                        material.style.display = 'block';
+                    } else {
+                        material.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Добавляем обработчики событий
+            searchInput.addEventListener('input', filterMaterials);
+            filterSubject.addEventListener('change', filterMaterials);
+            filterFormat.addEventListener('change', filterMaterials);
+            
+            // Обработка кнопок удаления существующих материалов
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const materialCard = this.closest('.material-card');
+                    const id = materialCard.getAttribute('data-id');
+                    deleteFile(id);
+                });
+            });
+            
+            // Обработка кнопок скачивания
+            document.querySelectorAll('.btn-download').forEach(button => {
+                button.addEventListener('click', function() {
+                    const materialCard = this.closest('.material-card');
+                    const id = materialCard.getAttribute('data-id');
+                    downloadFile(id);
+                });
+            });
+            
+            // Обработка кнопок просмотра
+            document.querySelectorAll('.btn-view').forEach(button => {
+                button.addEventListener('click', function() {
+                    const materialCard = this.closest('.material-card');
+                    const id = materialCard.getAttribute('data-id');
+                    viewFile(id);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

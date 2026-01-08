@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жеке кабинет - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        /* Шапка */
+        .dashboard-header {
+            background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 300px;
+            background: rgba(255,255,255,0.1);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 0);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+        }
+
+        .logo-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .user-quick-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .user-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        /* Основной контент */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 800px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Сайдбар */
+        .dashboard-sidebar {
+            background: #f8f9fa;
+            padding: 30px 0;
+            border-right: 1px solid #eaeaea;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            padding: 0 25px 15px;
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 25px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: #e9ecef;
+            color: #4a8af4;
+        }
+
+        .nav-link.active {
+            background: #e3f2fd;
+            color: #4a8af4;
+            border-left-color: #4a8af4;
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Контент */
+        .dashboard-content {
+            padding: 40px;
+            background: #fff;
+        }
+
+        /* Общие стили */
+        .section-header {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Карточки */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-left: 5px solid #4a8af4;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #4a8af4;
+            margin-bottom: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Дашборд */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .recent-activity {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        /* Профиль */
+        .profile-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #4a8af4;
+            box-shadow: 0 5px 15px rgba(74, 138, 244, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Карточки материалов */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .material-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 1px solid #eaeaea;
+        }
+
+        .material-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .material-header {
+            padding: 25px;
+            border-bottom: 1px solid #eaeaea;
+            background: #f8f9fa;
+        }
+
+        .material-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .material-body {
+            padding: 25px;
+        }
+
+        .material-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.download {
+            background: #4a8af4;
+            color: white;
+        }
+
+        .action-btn.download:hover {
+            background: #3a76d5;
+        }
+
+        .action-btn.delete {
+            background: #f8f9fa;
+            color: #dc3545;
+            border: 1px solid #ddd;
+        }
+
+        .action-btn.delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Кнопки */
+        .btn {
+            padding: 16px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #4a8af4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a76d5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(74, 138, 244, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Уведомления */
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: #4a8af4;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* Футер */
+        .dashboard-footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #4a8af4;
+        }
+
+        /* Кнопка выхода */
+        .logout-section {
+            padding: 0 25px;
+            margin-top: 30px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 18px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 30px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-quick-info {
+                flex-direction: column;
+            }
+            
+            .dashboard-content {
+                padding: 20px;
+            }
+            
+            .card-grid,
+            .materials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="save-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button class="btn-save" onclick="window.userState.saveState()" title="Сохранить все настройки">
+        <i class="fas fa-save"></i>
+    </button>
+    <button class="btn-reset" onclick="resetSettings()" title="Сбросить настройки">
+        <i class="fas fa-undo"></i>
+    </button>
+</div>
+
+<style>
+.btn-save, .btn-reset {
+    background: #4a8af4;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.btn-reset {
+    background: #ff6b6b;
+}
+</style>
+
+<script>
+function resetSettings() {
+    if (confirm('Сбросить все настройки к значениям по умолчанию?')) {
+        localStorage.clear();
+        window.userState.state = {...window.userState.defaultState};
+        window.userState.saveState();
+        location.reload();
+    }
+}
+</script>
+    <div class="dashboard-container">
+        <!-- Шапка -->
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Жеке кабинет</h1>
+                        <p>EduAssist платформасы</p>
+                    </div>
+                </div>
+                
+                <div class="user-quick-info">
+                    <div class="user-avatar" id="userAvatar">Ж</div>
+                    <div class="user-details">
+                        <h3 id="userName">Қолданушы</h3>
+                        <p id="userEmail">Жүктелуде...</p>
+                        <p id="userRole" style="font-size: 0.9rem; opacity: 0.9;"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-bg"></div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="dashboard-main">
+            <!-- Сайдбар -->
+            <div class="dashboard-sidebar">
+                <div class="nav-section">
+                    <div class="nav-title">Негізгі</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="dashboard.html" class="nav-link">
+                                <i class="fas fa-home"></i>
+                                <span>Басты бет</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" id="dashboardLink">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Бақылау тақтасы</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="personal-cabinet.html">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Профиль</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-materials.html">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Менің материалдарым</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="favorites.html">
+                                <i class="fas fa-star"></i>
+                                <span>Таңдаулылар</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">Оқу процесі</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="progress.html">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Өсу статистикасы</span>
+                            </a>
+                        </li>
+                        <!-- Раздел "Жетістіктер" удален -->
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">Коммуникация</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="messages.html">
+                                <i class="fas fa-comments"></i>
+                                <span>Хабарламалар</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="logout-section">
+                    <a href="logout.html" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Жүйеден шығу
+                    </a>
+                </div>
+            </div>
+
+            <!-- Контент (Дашборд) -->
+            <div class="dashboard-content">
+                <!-- Дашборд -->
+                <div id="dashboardContent">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-tachometer-alt"></i> Бақылау тақтасы
+                        </h2>
+                        <p class="section-subtitle">Жеке статистикаңыз және соңғы белсенділік</p>
+                    </div>
+                    
+                    <div class="alert alert-success" id="welcomeAlert" style="display: block;">
+                        Жеке кабинетіңізге қош келдіңіз!
+                    </div>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="stat-number">
+                                <span id="uploadsCount">0</span>
+                            </div>
+                            <div class="stat-label">Материалдар</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-number">
+                                <span id="favoritesCount">0</span>
+                            </div>
+                            <div class="stat-label">Таңдаулы материалдар</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-number">
+                                <span id="messagesCount">0</span>
+                            </div>
+                            <div class="stat-label">Хабарламалар</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-activity">
+                        <h3 style="margin-bottom: 25px; color: #333; font-size: 1.5rem;">
+                            <i class="fas fa-history"></i> Соңғы материалдар
+                        </h3>
+                        
+                        <div id="recentMaterials" class="materials-grid">
+                            <div class="loading">
+                                <i class="fas fa-spinner"></i>
+                                <p>Жүктелуде...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="dashboard-footer">
+            <div>
+                <p style="color: #666;">© 2025 EduAssist. Барлық құқықтар қорғалған.</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="dashboard.html" class="footer-link">Басты бет</a>
+                <a href="about.html" class="footer-link">Біз туралы</a>
+                <a href="contact.html" class="footer-link">Байланыс</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            where, 
+            getDocs,
+            orderBy,
+            limit
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase конфигурациясы
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJrCYwCJHqvZtkm6ojuCNMvrmUeYXHP5A",
+            authDomain: "eduassist-eb506.firebaseapp.com",
+            projectId: "eduassist-eb506",
+            storageBucket: "eduassist-eb506.appspot.com",
+            messagingSenderId: "977276770732",
+            appId: "1:977276770732:web:89e61415aa457039894209"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // ----------------------------
+        // 🔐 Аутентификация және бастапқы жүктеу
+        // ----------------------------
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            currentUser = user;
+            
+            // Пайдаланушы ақпаратын көрсету
+            updateUserInfo(user);
+            
+            // Дашборд деректерін жүктеу
+            loadDashboardData(user.uid);
+            loadRecentMaterials(user.uid);
+            
+            // Welcome хабарламасы
+            showAlert('welcomeAlert', `Қош келдіңіз, ${user.displayName || 'Қолданушы'}!`, 5000);
+        });
+
+        // ----------------------------
+        // 👤 Пайдаланушы ақпаратын жаңарту
+        // ----------------------------
+        function updateUserInfo(user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            const firstLetter = displayName.charAt(0).toUpperCase();
+            
+            document.getElementById("userName").textContent = displayName;
+            document.getElementById("userEmail").textContent = user.email;
+            document.getElementById("userAvatar").textContent = firstLetter;
+        }
+
+        // ----------------------------
+        // 📈 Дашборд деректерін жүктеу
+        // ----------------------------
+        async function loadDashboardData(uid) {
+            try {
+                // Жүктелген материалдар саны
+                const uploadsQuery = query(collection(db, "materials"), where("uploadedBy", "==", uid));
+                const uploadsSnapshot = await getDocs(uploadsQuery);
+                document.getElementById("uploadsCount").textContent = uploadsSnapshot.size;
+                
+                // Таңдаулы материалдар саны
+                const favoritesQuery = query(collection(db, "favorites"), where("uid", "==", uid));
+                const favoritesSnapshot = await getDocs(favoritesQuery);
+                document.getElementById("favoritesCount").textContent = favoritesSnapshot.size;
+                
+                // Хабарламалар саны
+                const messagesQuery = query(collection(db, "messages"), where("uid", "==", uid));
+                const messagesSnapshot = await getDocs(messagesQuery);
+                document.getElementById("messagesCount").textContent = messagesSnapshot.size;
+                
+            } catch (error) {
+                console.error("Дашборд деректерін жүктеу кезіндегі қате:", error);
+            }
+        }
+
+        // ----------------------------
+        // 📈 Соңғы материалдар (дашборд үшін)
+        // ----------------------------
+        async function loadRecentMaterials(uid) {
+            try {
+                const q = query(
+                    collection(db, "materials"), 
+                    orderBy("uploadedAt", "desc"), 
+                    limit(4)
+                );
+                
+                const querySnapshot = await getDocs(q);
+                const container = document.getElementById("recentMaterials");
+                
+                if (!container) {
+                    console.error("Контейнер recentMaterials не найден");
+                    return;
+                }
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-book"></i>
+                            <h3>Әлі материалдар жоқ</h3>
+                            <p>Алғашқы материалды жүктеңіз!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let materialsHTML = '';
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const uploadDate = data.uploadedAt ? 
+                        (data.uploadedAt.toDate ? data.uploadedAt.toDate().toLocaleDateString('kk-KZ') : 
+                        new Date(data.uploadedAt).toLocaleDateString('kk-KZ')) : 
+                        "Белгісіз";
+                    
+                    const title = data.title || "Атысыз материал";
+                    const format = data.format || "Форматсыз";
+                    const description = data.description ? 
+                        (data.description.substring(0, 100) + (data.description.length > 100 ? '...' : '')) : 
+                        "Сипаттамасыз";
+                    
+                    const fileURL = data.fileURL || "#";
+                    
+                    materialsHTML += `
+                        <div class="material-card">
+                            <div class="material-header">
+                                <div class="material-title">${title}</div>
+                                <div class="material-meta">
+                                    <span>${format}</span>
+                                    <span>${uploadDate}</span>
+                                </div>
+                            </div>
+                            <div class="material-body">
+                                <p class="material-description">
+                                    ${description}
+                                </p>
+                                <a href="${fileURL}" target="_blank" class="action-btn download" style="text-decoration: none; width: 100%;">
+                                    <i class="fas fa-external-link-alt"></i> Ашу
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = materialsHTML;
+                
+            } catch (error) {
+                console.error("Соңғы материалдарды жүктеу кезіндегі қате:", error);
+                const container = document.getElementById("recentMaterials");
+                if (container) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Қате орын алды</h3>
+                            <p>Материалдарды жүктеу кезінде қате пайда болды</p>
+                            <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 15px;">
+                                <i class="fas fa-redo"></i> Қайта жүктеу
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // ----------------------------
+        // 🚪 Шығу функциясы
+        // ----------------------------
+        async function logout() {
+            if (confirm("Шынымен жүйеден шығғыңыз келе ме?")) {
+                try {
+                    await signOut(auth);
+                    window.location.href = "index.html";
+                } catch (error) {
+                    console.error("Шығу кезіндегі қате:", error);
+                    alert("Шығу кезінде қате пайда болды. Қайталап көріңіз.");
+                }
+            }
+        }
+
+        // ----------------------------
+        // 📋 Хабарламаларды көрсету
+        // ----------------------------
+        function showAlert(elementId, message, duration = 3000) {
+            const alertElement = document.getElementById(elementId);
+            if (alertElement) {
+                alertElement.textContent = message;
+                alertElement.style.display = 'block';
+                
+                setTimeout(() => {
+                    alertElement.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        // ----------------------------
+        // 🧭 Навигацияны басқару
+        // ----------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            // Дашборд сілтемесіне байланысу
+            const dashboardLink = document.getElementById('dashboardLink');
+            if (dashboardLink) {
+                dashboardLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Белсенді түймені өзгерту
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Дашборд деректерін жаңарту
+                    if (currentUser) {
+                        loadDashboardData(currentUser.uid);
+                        loadRecentMaterials(currentUser.uid);
+                    }
+                });
+            }
+            
+            // Барлық сілтемелерге активті класты басқару
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Егер бұл дашборд сілтемесі болмаса
+                    if (this.id !== 'dashboardLink') {
+                        // Сайттан шықпайтын сілтемелер үшін
+                        if (this.getAttribute('href') && 
+                            !this.getAttribute('href').startsWith('http') &&
+                            this.getAttribute('href') !== '#') {
+                            // Өз бетіндегі активтілікті басқару
+                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                            this.classList.add('active');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Глобалды функцияларды жасау
+        window.logout = logout;
+        window.loadRecentMaterials = loadRecentMaterials;
+    </script>
+
+</body>
+</html>

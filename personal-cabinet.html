@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профильді баптау - EduAssist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        /* Навигация */
+        .nav-back {
+            background: white;
+            padding: 15px 40px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a8af4;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-back a:hover {
+            background: #f0f7ff;
+        }
+
+        /* Шапка */
+        .profile-header {
+            background: linear-gradient(135deg, #4a8af4 0%, #3a76d5 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 300px;
+            background: rgba(255,255,255,0.1);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 0);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+        }
+
+        .logo-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .user-quick-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            border: 5px solid rgba(255,255,255,0.3);
+        }
+
+        .user-details h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        /* Контент */
+        .profile-content {
+            padding: 40px;
+        }
+
+        .section-header {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Профиль формасы */
+        .profile-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .avatar-upload {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #e3f2fd;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #4a8af4;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #4a8af4;
+            box-shadow: 0 5px 15px rgba(74, 138, 244, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-input[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        /* Кнопки */
+        .btn {
+            padding: 16px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #4a8af4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a76d5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(74, 138, 244, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Уведомления */
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Футер */
+        .profile-footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #4a8af4;
+        }
+
+        /* Уведомление */
+        .notification-toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .notification-toast.error {
+            background: #f44336;
+        }
+
+        .notification-toast.warning {
+            background: #ff9800;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .profile-header {
+                padding: 30px 20px;
+            }
+            
+            .profile-content {
+                padding: 20px;
+            }
+            
+            .profile-form {
+                padding: 20px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo-text h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <!-- Навигация назад -->
+        <div class="nav-back">
+            <a onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Кері қайту
+            </a>
+        </div>
+
+        <!-- Шапка -->
+        <div class="profile-header">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Профильді баптау</h1>
+                    <p>EduAssist платформасы</p>
+                </div>
+            </div>
+            
+            <div class="user-quick-info">
+                <div class="user-avatar" id="userAvatar">Ж</div>
+                <div class="user-details">
+                    <h3 id="userName">Қолданушы</h3>
+                    <p id="userEmail">Жүктелуде...</p>
+                </div>
+            </div>
+            
+            <div class="header-bg"></div>
+        </div>
+
+        <!-- Контент -->
+        <div class="profile-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-user-cog"></i> Жеке ақпарат
+                </h2>
+                <p class="section-subtitle">Жеке ақпаратыңызды жаңартыңыз және баптаңыз</p>
+            </div>
+            
+            <div class="profile-form">
+                <div class="avatar-upload">
+                    <div class="avatar-preview" id="avatarPreview" onclick="document.getElementById('avatarInput').click()">
+                        <div class="avatar-placeholder" id="avatarInitial">Ж</div>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                    <p style="color: #666; margin-top: 10px;">Фотосуретті өзгерту үшін суретке басыңыз</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Толық аты-жөні</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="Аты-жөніңізді енгізіңіз">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Электрондық пошта</label>
+                        <input type="email" class="form-input" id="email" placeholder="email@example.com" readonly>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Сынып / Группа</label>
+                        <select class="form-select" id="userClass">
+                            <option value="">Сыныпты таңдаңыз</option>
+                            <option value="7">7 сынып</option>
+                            <option value="8">8 сынып</option>
+                            <option value="9">9 сынып</option>
+                            <option value="10">10 сынып</option>
+                            <option value="11">11 сынып</option>
+                            <option value="teacher">Мұғалім</option>
+                            <option value="parent">Ата-ана</option>
+                            <option value="student">Студент</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Телефон нөмірі</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="+7 (777) 123-45-67">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Туған күні</label>
+                    <input type="date" class="form-input" id="birthDate">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Мектеп / Университет</label>
+                    <input type="text" class="form-input" id="school" placeholder="Мектеп атауы">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Өзі туралы қысқаша</label>
+                    <textarea class="form-textarea" id="bio" placeholder="Өзіңіз туралы қысқаша сипаттама..." rows="4"></textarea>
+                </div>
+                
+                <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #f0f0f0;">
+                    <h3 style="margin-bottom: 25px; color: #333; font-size: 1.5rem;">
+                        <i class="fas fa-lock"></i> Қауіпсіздік
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Ағымдағы құпиясөз</label>
+                            <input type="password" class="form-input" id="currentPassword" placeholder="Ағымдағы құпиясөз">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Жаңа құпиясөз</label>
+                            <input type="password" class="form-input" id="newPassword" placeholder="Кемінде 6 таңба">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Жаңа құпиясөзді қайталаңыз</label>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="Құпиясөзді қайта енгізіңіз">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="updateProfile()">
+                        <i class="fas fa-save"></i> Өзгерістерді сақтау
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i> Болдырмау
+                    </button>
+                    <a href="logout.html" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Жүйеден шығу
+          </a>
+                </div>
+                
+                <div class="alert alert-success" id="profileAlert" style="display: none; margin-top: 20px;">
+                    Профиль сәтті жаңартылды!
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="profile-footer">
+            <div>
+                <p style="color: #666;">© 2025 EduAssist. Барлық құқықтар қорғалған.</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="dashboard.html" class="footer-link">Басты бет</a>
+                <a href="profile.html" class="footer-link">Жеке кабинет</a>
+                <a href="contact.html" class="footer-link">Байланыс</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification-toast" id="notificationToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Өзгерістер сақталды!</span>
+    </div>
+
+    <script>
+        // Функция для возврата назад
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Если нет истории, возвращаем в личный кабинет
+                window.location.href = 'personal-cabinet.html';
+            }
+        }
+
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJrCYwCJHqvZtkm6ojuCNMvrmUeYXHP5A",
+            authDomain: "eduassist-eb506.firebaseapp.com",
+            projectId: "eduassist-eb506",
+            storageBucket: "eduassist-eb506.appspot.com",
+            messagingSenderId: "977276770732",
+            appId: "1:977276770732:web:89e61415aa457039894209"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверка авторизации
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                currentUser = user;
+                
+                // Отображение информации пользователя
+                updateUserInfo(user);
+                
+                // Загрузка данных пользователя
+                await loadUserData(user.uid);
+            });
+
+            // Обработка загрузки аватара
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadAvatar(file);
+                }
+            });
+        });
+
+        // Обновление информации пользователя
+        function updateUserInfo(user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            const firstLetter = displayName.charAt(0).toUpperCase();
+            
+            document.getElementById('userName').textContent = displayName;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').textContent = firstLetter;
+            document.getElementById('avatarInitial').textContent = firstLetter;
+            
+            // Заполняем форму профиля
+            document.getElementById('fullName').value = displayName;
+            document.getElementById('email').value = user.email;
+        }
+
+        // Загрузка данных пользователя
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await db.collection('users').doc(userId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    // Заполняем форму профиля данными из базы
+                    document.getElementById('phone').value = userData.phone || '';
+                    document.getElementById('school').value = userData.school || '';
+                    document.getElementById('bio').value = userData.bio || '';
+                    document.getElementById('birthDate').value = userData.birthDate || '';
+                    
+                    if (userData.class) {
+                        document.getElementById('userClass').value = userData.class;
+                    }
+                    
+                    // Загружаем аватар, если есть
+                    if (userData.avatarUrl) {
+                        document.getElementById('avatarPreview').innerHTML = `
+                            <img src="${userData.avatarUrl}" alt="Аватар">
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Пайдаланушы деректерін жүктеу кезіндегі қате:', error);
+            }
+        }
+
+        // Обновление профиля
+        async function updateProfile() {
+            if (!currentUser) return;
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const userClass = document.getElementById('userClass').value;
+            const school = document.getElementById('school').value.trim();
+            const bio = document.getElementById('bio').value.trim();
+            const birthDate = document.getElementById('birthDate').value;
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            try {
+                // Обновление имени пользователя
+                if (fullName && fullName !== currentUser.displayName) {
+                    await currentUser.updateProfile({
+                        displayName: fullName
+                    });
+                    
+                    document.getElementById('userName').textContent = fullName;
+                    document.getElementById('userAvatar').textContent = fullName.charAt(0).toUpperCase();
+                    document.getElementById('avatarInitial').textContent = fullName.charAt(0).toUpperCase();
+                }
+                
+                // Обновление данных в Firestore
+                await db.collection('users').doc(currentUser.uid).set({
+                    phone: phone,
+                    class: userClass,
+                    school: school,
+                    bio: bio,
+                    birthDate: birthDate,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                // Смена пароля
+                if (newPassword) {
+                    if (newPassword.length < 6) {
+                        showNotification('Құпиясөз кемінде 6 таңба болуы керек', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        showNotification('Құпиясөздер сәйкес келмейді', 'error');
+                        return;
+                    }
+                    
+                    await currentUser.updatePassword(newPassword);
+                    
+                    // Очищаем поля паролей
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                }
+                
+                showNotification('Профиль сәтті жаңартылды!');
+                
+            } catch (error) {
+                console.error('Профильді жаңарту кезіндегі қате:', error);
+                
+                if (error.code === 'auth/requires-recent-login') {
+                    showNotification('Қауіпсіздік үшін қайта кіріңіз', 'error');
+                    setTimeout(() => logout(), 2000);
+                } else {
+                    showNotification('Профильді жаңарту кезінде қате пайда болды: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // Загрузка аватара
+        async function uploadAvatar(file) {
+            if (!currentUser) return;
+            
+            try {
+                // Проверка типа файла
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Тек сурет файлдарын жүктеуге болады', 'error');
+                    return;
+                }
+                
+                // Проверка размера файла (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('Сурет өлшемі 5MB-тан аспауы керек', 'error');
+                    return;
+                }
+                
+                // Загрузка в Firebase Storage
+                const storageRef = storage.ref();
+                const avatarRef = storageRef.child(`avatars/${currentUser.uid}/${file.name}`);
+                
+                await avatarRef.put(file);
+                const downloadURL = await avatarRef.getDownloadURL();
+                
+                // Обновление аватара пользователя
+                await currentUser.updateProfile({
+                    photoURL: downloadURL
+                });
+                
+                // Сохранение URL в Firestore
+                await db.collection('users').doc(currentUser.uid).set({
+                    avatarUrl: downloadURL,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                // Обновление предпросмотра
+                document.getElementById('avatarPreview').innerHTML = `
+                    <img src="${downloadURL}" alt="Аватар">
+                `;
+                
+                showNotification('Фотосурет сәтті жүктелді!');
+                
+            } catch (error) {
+                console.error('Фотосуретті жүктеу кезіндегі қате:', error);
+                showNotification('Фотосуретті жүктеу кезінде қате пайда болды', 'error');
+            }
+        }
+
+        // Сброс формы профиля
+        function resetForm() {
+            if (currentUser) {
+                updateUserInfo(currentUser);
+                loadUserData(currentUser.uid);
+            }
+            
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        // Выход из системы
+        function logout() {
+            if (confirm('Жүйеден шығуға сенімдісіз бе?')) {
+                auth.signOut().then(() => {
+                    window.location.href = 'index.html';
+                }).catch(error => {
+                    console.error('Шығу кезіндегі қате:', error);
+                    showNotification('Шығу кезінде қате пайда болды', 'error');
+                });
+            }
+        }
+
+        // Показать уведомление
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            // Меняем цвет в зависимости от типа
+            toast.className = 'notification-toast';
+            if (type === 'error') {
+                toast.classList.add('error');
+            } else if (type === 'warning') {
+                toast.classList.add('warning');
+            }
+            
+            // Показываем уведомление
+            toast.classList.add('show');
+            
+            // Скрываем через 3 секунды
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
